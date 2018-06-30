@@ -151,7 +151,7 @@ AsciiDialog::AsciiDialog(QDialog *parent)
     qDebug() << "AsciiDialog::AsciiDialog";
 
     this->setWindowTitle("ASCII");
-    this->setMinimumSize(QSize(800, 800));
+    this->setMinimumSize(QSize(800, 600));
 
     QVBoxLayout *toplayout = new QVBoxLayout(this);
     this->setLayout(toplayout);
