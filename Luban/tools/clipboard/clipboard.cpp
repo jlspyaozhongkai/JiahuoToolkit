@@ -7,6 +7,7 @@
 #include <QClipboard>
 #include <QLabel>
 #include <QScrollArea>
+#include <QScrollBar>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -26,6 +27,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     auto flush_btn = new QPushButton("刷新:本窗体在最前是会自动刷新", this);
     toplayout->addWidget(flush_btn);
     flush_btn->setMaximumWidth(300);
+
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
 
     //文本
@@ -34,6 +36,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     layout->addWidget(new QLabel("文本", this));
     this->textAvalable = new QLabel(this);
     this->textAvalable->setFixedWidth(40);
+    this->textAvalable->setFixedHeight(16);
     this->textAvalable->setAutoFillBackground(true);
     layout->addWidget(this->textAvalable);
     layout->addStretch();
@@ -41,7 +44,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     this->textShow = new QTextEdit(this);
     toplayout->addWidget(this->textShow);
     this->textShow->setReadOnly(true);
-    this->textShow->setFixedHeight(80);
+    this->textShow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     //Pixmap
     layout = new QHBoxLayout(this);
@@ -49,18 +52,17 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     layout->addWidget(new QLabel("Pixmap", this));
     this->pixmapAvalable = new QLabel(this);
     this->pixmapAvalable->setFixedWidth(40);
+    this->pixmapAvalable->setFixedHeight(16);
     this->pixmapAvalable->setAutoFillBackground(true);
     layout->addWidget(this->pixmapAvalable);
     layout->addStretch();
 
     QScrollArea *scroll = new QScrollArea(this);
     toplayout->addWidget(scroll);
-    scroll->setFixedHeight(100);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     this->pixmapShow = new QLabel(this);
     scroll->setWidget(this->pixmapShow);
-    this->pixmapShow->setFixedWidth(100);
-    this->pixmapShow->setFixedHeight(100);
 
     //
 
