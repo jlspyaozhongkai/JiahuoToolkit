@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QLabel>
+#include <QScrollArea>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -16,7 +17,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     qDebug() << "ClipBoardDialog::ClipBoardDialog";
 
     this->setWindowTitle("ClipBoard");
-    this->setMinimumSize(QSize(800, 600));
+    this->setMinimumWidth(800);
 
     QVBoxLayout *toplayout = new QVBoxLayout(this);
     this->setLayout(toplayout);
@@ -27,7 +28,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     flush_btn->setMaximumWidth(300);
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
 
-    //
+    //文本
     auto layout = new QHBoxLayout(this);
     toplayout->addLayout(layout);
     layout->addWidget(new QLabel("文本", this));
@@ -40,6 +41,28 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     this->textShow = new QTextEdit(this);
     toplayout->addWidget(this->textShow);
     this->textShow->setReadOnly(true);
+    this->textShow->setFixedHeight(80);
+
+    //Pixmap
+    layout = new QHBoxLayout(this);
+    toplayout->addLayout(layout);
+    layout->addWidget(new QLabel("Pixmap", this));
+    this->pixmapAvalable = new QLabel(this);
+    this->pixmapAvalable->setFixedWidth(40);
+    this->pixmapAvalable->setAutoFillBackground(true);
+    layout->addWidget(this->pixmapAvalable);
+    layout->addStretch();
+
+    QScrollArea *scroll = new QScrollArea(this);
+    toplayout->addWidget(scroll);
+    scroll->setFixedHeight(100);
+
+    this->pixmapShow = new QLabel(this);
+    scroll->setWidget(this->pixmapShow);
+    this->pixmapShow->setFixedWidth(100);
+    this->pixmapShow->setFixedHeight(100);
+
+    //
 
     //
     QClipboard *board = QApplication::clipboard();
@@ -72,6 +95,15 @@ void ClipBoardDialog::flush()
     } else {
         this->textAvalable->setPalette(is_avalable);
         this->textShow->setText(text);
+    }
+
+    auto pixmap = board->pixmap();
+    if (pixmap.isNull()) {
+        this->pixmapAvalable->setPalette(not_avalable);
+        this->pixmapShow->setPixmap(pixmap);
+    } else {
+        this->pixmapAvalable->setPalette(is_avalable);
+        this->pixmapShow->setPixmap(pixmap);
     }
 
     return;

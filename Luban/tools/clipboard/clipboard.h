@@ -21,6 +21,9 @@ public:
 private:
     QLabel *textAvalable;
     QTextEdit *textShow;
+
+    QLabel *pixmapAvalable;
+    QLabel *pixmapShow;
 };
 
 #endif //CLIPBOARD
