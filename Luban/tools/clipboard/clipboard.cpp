@@ -93,16 +93,20 @@ void ClipBoardDialog::flush()
 
     auto text = board->text();
     if (text.isEmpty()) {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->textTab), false);
         this->textShow->setText("");
     } else {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->textTab), true);
         this->main_tab->setCurrentWidget(this->textTab);
         this->textShow->setText(text);
     }
 
     auto pixmap = board->pixmap();
     if (pixmap.isNull()) {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->pixmapTab), false);
         this->pixmapShow->setPixmap(pixmap);
     } else {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->pixmapTab), true);
         this->main_tab->setCurrentWidget(this->pixmapTab);
         this->pixmapShow->setPixmap(pixmap);
         this->pixmapShow->setFixedSize(pixmap.size());
@@ -110,9 +114,11 @@ void ClipBoardDialog::flush()
 
     auto image = board->image();
     if (image.isNull()) {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->imageTab), false);
         QPixmap pixmap;
         this->imageShow->setPixmap(pixmap);
     } else {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->imageTab), true);
         this->main_tab->setCurrentWidget(this->imageTab);
         QPixmap pixmap;
         pixmap.convertFromImage(image);
