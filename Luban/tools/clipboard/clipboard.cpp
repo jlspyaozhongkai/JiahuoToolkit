@@ -104,6 +104,7 @@ void ClipBoardDialog::flush()
     } else {
         this->pixmapAvalable->setPalette(is_avalable);
         this->pixmapShow->setPixmap(pixmap);
+        this->pixmapShow->setFixedSize(pixmap.size());
     }
 
     return;
