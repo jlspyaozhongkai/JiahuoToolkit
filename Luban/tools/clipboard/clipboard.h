@@ -30,6 +30,9 @@ private:
 
     QWidget *imageTab;
     QLabel *imageShow;
+
+    QWidget *mimeTab;
+    QTextEdit *mimeShow;
 };
 
 #endif //CLIPBOARD

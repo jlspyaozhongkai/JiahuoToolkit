@@ -10,6 +10,7 @@
 #include <QScrollBar>
 #include <QTabWidget>
 #include <QImage>
+#include <QMimeData>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -66,6 +67,16 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     this->imageShow = new QLabel(this);
     scroll->setWidget(this->imageShow);
+
+    //Mime
+    this->mimeTab = new QWidget(this);
+    this->main_tab->addTab(this->mimeTab, "Mime");
+    layout = new QVBoxLayout(this);
+    this->mimeTab->setLayout(layout);
+
+    this->mimeShow = new QTextEdit(this);
+    layout->addWidget(this->mimeShow);
+    this->mimeShow->setReadOnly(true);
 
     //
     QClipboard *board = QApplication::clipboard();
@@ -124,6 +135,15 @@ void ClipBoardDialog::flush()
         pixmap.convertFromImage(image);
         this->imageShow->setPixmap(pixmap);
         this->imageShow->setFixedSize(pixmap.size());
+    }
+
+    auto mime = board->mimeData();
+    if (mime == NULL) {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->mimeTab), false);
+        this->mimeShow->setText("");
+    } else {
+        this->main_tab->setTabEnabled(this->main_tab->indexOf(this->mimeTab), true);
+        this->mimeShow->setText("Not support now.");
     }
 
     return;
