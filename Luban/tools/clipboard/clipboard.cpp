@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QTabWidget>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -23,48 +24,38 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     QVBoxLayout *toplayout = new QVBoxLayout(this);
     this->setLayout(toplayout);
 
-    //
+    //顶上按钮
     auto flush_btn = new QPushButton("刷新:本窗体在最前是会自动刷新", this);
     toplayout->addWidget(flush_btn);
     flush_btn->setMaximumWidth(300);
-
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
 
-    //文本
-    auto layout = new QHBoxLayout(this);
-    toplayout->addLayout(layout);
-    layout->addWidget(new QLabel("文本", this));
-    this->textAvalable = new QLabel(this);
-    this->textAvalable->setFixedWidth(40);
-    this->textAvalable->setFixedHeight(16);
-    this->textAvalable->setAutoFillBackground(true);
-    layout->addWidget(this->textAvalable);
-    layout->addStretch();
+    //下部tab
+    this->main_tab = new QTabWidget(this);
+    toplayout->addWidget(this->main_tab);
 
+    //文本
+    this->textTab = new QWidget(this);
+    this->main_tab->addTab(this->textTab, "文本");
+    auto layout = new QVBoxLayout(this);
+    this->textTab->setLayout(layout);
     this->textShow = new QTextEdit(this);
-    toplayout->addWidget(this->textShow);
+    layout->addWidget(this->textShow);
     this->textShow->setReadOnly(true);
     this->textShow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     //Pixmap
-    layout = new QHBoxLayout(this);
-    toplayout->addLayout(layout);
-    layout->addWidget(new QLabel("Pixmap", this));
-    this->pixmapAvalable = new QLabel(this);
-    this->pixmapAvalable->setFixedWidth(40);
-    this->pixmapAvalable->setFixedHeight(16);
-    this->pixmapAvalable->setAutoFillBackground(true);
-    layout->addWidget(this->pixmapAvalable);
-    layout->addStretch();
-
+    this->pixmapTab = new QWidget(this);
+    this->main_tab->addTab(this->pixmapTab, "PixMap");
+    layout = new QVBoxLayout(this);
+    this->pixmapTab->setLayout(layout);
     QScrollArea *scroll = new QScrollArea(this);
-    toplayout->addWidget(scroll);
+    layout->addWidget(scroll);
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
     this->pixmapShow = new QLabel(this);
     scroll->setWidget(this->pixmapShow);
 
-    //
+    //Image
 
     //
     QClipboard *board = QApplication::clipboard();
@@ -92,19 +83,17 @@ void ClipBoardDialog::flush()
 
     auto text = board->text();
     if (text.isEmpty()) {
-        this->textAvalable->setPalette(not_avalable);
         this->textShow->setText("");
     } else {
-        this->textAvalable->setPalette(is_avalable);
+        this->main_tab->setCurrentWidget(this->textTab);
         this->textShow->setText(text);
     }
 
     auto pixmap = board->pixmap();
     if (pixmap.isNull()) {
-        this->pixmapAvalable->setPalette(not_avalable);
         this->pixmapShow->setPixmap(pixmap);
     } else {
-        this->pixmapAvalable->setPalette(is_avalable);
+        this->main_tab->setCurrentWidget(this->pixmapTab);
         this->pixmapShow->setPixmap(pixmap);
         this->pixmapShow->setFixedSize(pixmap.size());
     }

@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTextEdit>
+#include <QTabWidget>
 
 class ClipBoardDialog : public QDialog
 {
@@ -19,10 +20,12 @@ public:
 public:
     void flush();    //刷新
 private:
-    QLabel *textAvalable;
+    QTabWidget *main_tab;
+
+    QWidget *textTab;
     QTextEdit *textShow;
 
-    QLabel *pixmapAvalable;
+    QWidget *pixmapTab;
     QLabel *pixmapShow;
 };
 
