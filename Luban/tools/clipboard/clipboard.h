@@ -4,6 +4,9 @@
 
 #include <QWidget>
 #include <QDialog>
+#include <QPushButton>
+#include <QLabel>
+#include <QTextEdit>
 
 class ClipBoardDialog : public QDialog
 {
@@ -16,6 +19,8 @@ public:
 public:
     void flush();    //刷新
 private:
+    QLabel *textAvalable;
+    QTextEdit *textShow;
 };
 
 #endif //CLIPBOARD
