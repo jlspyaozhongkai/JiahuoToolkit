@@ -22,9 +22,9 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     this->setLayout(toplayout);
 
     //
-    auto flush_btn = new QPushButton("刷新", this);
+    auto flush_btn = new QPushButton("刷新:本窗体在最前是会自动刷新", this);
     toplayout->addWidget(flush_btn);
-    flush_btn->setMaximumWidth(50);
+    flush_btn->setMaximumWidth(300);
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
 
     //
@@ -43,7 +43,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
 
     //
     QClipboard *board = QApplication::clipboard();
-    connect(board, &QClipboard::changed, [this]{this->flush();});
+    connect(board, &QClipboard::changed, [this]{qDebug() << "QClipboard::changed"; this->flush();});
 
     return;
 }
