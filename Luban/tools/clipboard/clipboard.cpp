@@ -1,6 +1,7 @@
 
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QPushButton>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -17,12 +18,24 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     this->setLayout(toplayout);
 
     //
+    auto flush_btn = new QPushButton("刷新", this);
+    toplayout->addWidget(flush_btn);
+    flush_btn->setMaximumWidth(50);
+    connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
+
+    //
 
     return;
 }
 
 ClipBoardDialog::~ClipBoardDialog()
 {
+    return;
+}
+
+void ClipBoardDialog::flush()
+{
+    qDebug() << "ClipBoardDialog::flush";
     return;
 }
 
@@ -38,5 +51,6 @@ void ClipBoardDialog::launch()
     win->setModal(false);
     win->show();
     win->setFocus();
+    win->flush();
     return;
 }

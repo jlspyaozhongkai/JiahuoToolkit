@@ -13,8 +13,9 @@ public:
 public:
     ClipBoardDialog(QDialog *parent = 0);
     ~ClipBoardDialog();
+public:
+    void flush();    //刷新
 private:
-
 };
 
 #endif //CLIPBOARD
