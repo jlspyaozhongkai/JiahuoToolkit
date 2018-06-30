@@ -8,7 +8,7 @@
 #include <QHeaderView>
 #include "ascii.h"
 
-static AsciiWidget *singleton = NULL;
+static AsciiDialog *singleton = NULL;
 
 struct AsciiData {
     char index;
@@ -145,10 +145,10 @@ struct AsciiData {
     {127, "DEL", "删除"},
 };
 
-AsciiWidget::AsciiWidget(QDialog *parent)
+AsciiDialog::AsciiDialog(QDialog *parent)
     : QDialog(parent)
 {
-    qDebug() << "AsciiWidget::AsciiWidget";
+    qDebug() << "AsciiDialog::AsciiDialog";
 
     this->setWindowTitle("ASCII");
     this->setMinimumSize(QSize(800, 800));
@@ -225,19 +225,19 @@ AsciiWidget::AsciiWidget(QDialog *parent)
     return;
 }
 
-AsciiWidget::~AsciiWidget()
+AsciiDialog::~AsciiDialog()
 {
     return;
 }
 
-void AsciiWidget::launch()
+void AsciiDialog::launch()
 {
-    qDebug() << "AsciiWidget::launch";
+    qDebug() << "AsciiDialog::launch";
 
     if (singleton == NULL) {
-        singleton = new AsciiWidget();
+        singleton = new AsciiDialog();
     }
-    AsciiWidget *win = singleton;
+    AsciiDialog *win = singleton;
 
     win->setModal(false);
     win->show();

@@ -27,7 +27,7 @@ void MainWindow::setupMenu()
     QMenu *tool_menu = new QMenu("工具");
     menubar->addMenu(tool_menu);
 
-    tool_menu->addAction("ASCII码表", []{AsciiWidget::launch();});
+    tool_menu->addAction("ASCII码表", []{AsciiDialog::launch();});
 
     return;
 }
