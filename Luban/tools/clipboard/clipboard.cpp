@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QTabWidget>
+#include <QImage>
 #include "clipboard.h"
 
 static ClipBoardDialog *singleton = NULL;
@@ -36,7 +37,7 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
 
     //文本
     this->textTab = new QWidget(this);
-    this->main_tab->addTab(this->textTab, "文本");
+    this->main_tab->addTab(this->textTab, "Text");
     auto layout = new QVBoxLayout(this);
     this->textTab->setLayout(layout);
     this->textShow = new QTextEdit(this);
@@ -56,6 +57,15 @@ ClipBoardDialog::ClipBoardDialog(QDialog *parent)
     scroll->setWidget(this->pixmapShow);
 
     //Image
+    this->imageTab = new QWidget(this);
+    this->main_tab->addTab(this->imageTab, "Image");
+    layout = new QVBoxLayout(this);
+    this->imageTab->setLayout(layout);
+    scroll = new QScrollArea(this);
+    layout->addWidget(scroll);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    this->imageShow = new QLabel(this);
+    scroll->setWidget(this->imageShow);
 
     //
     QClipboard *board = QApplication::clipboard();
@@ -96,6 +106,18 @@ void ClipBoardDialog::flush()
         this->main_tab->setCurrentWidget(this->pixmapTab);
         this->pixmapShow->setPixmap(pixmap);
         this->pixmapShow->setFixedSize(pixmap.size());
+    }
+
+    auto image = board->image();
+    if (image.isNull()) {
+        QPixmap pixmap;
+        this->imageShow->setPixmap(pixmap);
+    } else {
+        this->main_tab->setCurrentWidget(this->imageTab);
+        QPixmap pixmap;
+        pixmap.convertFromImage(image);
+        this->imageShow->setPixmap(pixmap);
+        this->imageShow->setFixedSize(pixmap.size());
     }
 
     return;

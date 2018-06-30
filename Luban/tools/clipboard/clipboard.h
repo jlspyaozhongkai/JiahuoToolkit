@@ -27,6 +27,9 @@ private:
 
     QWidget *pixmapTab;
     QLabel *pixmapShow;
+
+    QWidget *imageTab;
+    QLabel *imageShow;
 };
 
 #endif //CLIPBOARD
