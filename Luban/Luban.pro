@@ -26,8 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     tools/ascii/ascii.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    tools/clipboard/clipboard.cpp
 
 HEADERS += \
     tools/ascii/ascii.h \
-    mainwindow.h
+    mainwindow.h \
+    tools/clipboard/clipboard.h
