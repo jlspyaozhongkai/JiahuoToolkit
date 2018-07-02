@@ -5,6 +5,23 @@
 
 #include <QDialog>
 
+//每个节点都是一个Coder的子类
+class Coder :public QWidget
+{
+    Q_OBJECT
+public:
+    Coder(QWidget *parent = 0);
+    ~Coder();
+};
+
+class ConvertInner : public QWidget
+{
+    Q_OBJECT
+public:
+    ConvertInner(QWidget *parent = 0);
+    ~ConvertInner();
+};
+
 class ConvertDialog : public QDialog
 {
     Q_OBJECT
