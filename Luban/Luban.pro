@@ -27,9 +27,11 @@ SOURCES += \
     tools/ascii/ascii.cpp \
     main.cpp \
     mainwindow.cpp \
-    tools/clipboard/clipboard.cpp
+    tools/clipboard/clipboard.cpp \
+    tools/convert/convert.cpp
 
 HEADERS += \
     tools/ascii/ascii.h \
     mainwindow.h \
-    tools/clipboard/clipboard.h
+    tools/clipboard/clipboard.h \
+    tools/convert/convert.h
