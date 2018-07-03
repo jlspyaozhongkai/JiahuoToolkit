@@ -6,6 +6,7 @@
 #include <QTextEdit>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QSizeGrip>
 #include "ascii.h"
 
 static AsciiDialog *singleton = NULL;
@@ -145,8 +146,8 @@ struct AsciiData {
     {127, "DEL", "删除"},
 };
 
-AsciiDialog::AsciiDialog(QDialog *parent)
-    : QDialog(parent)
+AsciiDialog::AsciiDialog(QWidget *parent)
+    : QWidget(parent)
 {
     qDebug() << "AsciiDialog::AsciiDialog";
 
@@ -239,7 +240,7 @@ void AsciiDialog::launch()
     }
     AsciiDialog *win = singleton;
 
-    win->setModal(false);
+    //win->setModal(false);
     win->show();
     win->setFocus();
     return;

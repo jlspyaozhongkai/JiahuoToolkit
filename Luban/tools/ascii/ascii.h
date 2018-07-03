@@ -5,13 +5,13 @@
 #include <QWidget>
 #include <QDialog>
 
-class AsciiDialog : public QDialog
+class AsciiDialog : public QWidget
 {
     Q_OBJECT
 public:
     static void launch();
 public:
-    AsciiDialog(QDialog *parent = 0);
+    AsciiDialog(QWidget *parent = 0);
     ~AsciiDialog();
 private:
 
