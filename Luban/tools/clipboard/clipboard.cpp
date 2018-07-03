@@ -15,8 +15,8 @@
 
 static ClipBoardDialog *singleton = NULL;
 
-ClipBoardDialog::ClipBoardDialog(QDialog *parent)
-    : QDialog(parent)
+ClipBoardDialog::ClipBoardDialog(QWidget *parent)
+    : QWidget(parent)
 {
     qDebug() << "ClipBoardDialog::ClipBoardDialog";
 
@@ -158,7 +158,6 @@ void ClipBoardDialog::launch()
     }
     ClipBoardDialog *win = singleton;
 
-    win->setModal(false);
     win->show();
     win->setFocus();
     win->flush();

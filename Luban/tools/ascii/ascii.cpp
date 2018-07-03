@@ -240,7 +240,6 @@ void AsciiDialog::launch()
     }
     AsciiDialog *win = singleton;
 
-    //win->setModal(false);
     win->show();
     win->setFocus();
     return;

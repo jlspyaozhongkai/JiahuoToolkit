@@ -9,13 +9,13 @@
 #include <QTextEdit>
 #include <QTabWidget>
 
-class ClipBoardDialog : public QDialog
+class ClipBoardDialog : public QWidget
 {
     Q_OBJECT
 public:
     static void launch();
 public:
-    ClipBoardDialog(QDialog *parent = 0);
+    ClipBoardDialog(QWidget *parent = 0);
     ~ClipBoardDialog();
 public:
     void flush();    //刷新
