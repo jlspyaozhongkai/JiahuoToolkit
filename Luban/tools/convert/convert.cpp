@@ -27,21 +27,28 @@ Coder::~Coder()
 }
 
 //为Coder提供大小调整功能
-CoderBox::CoderBox(QWidget *parent)
+CoderBox::CoderBox(QString title, QWidget *parent)
     : QWidget(parent)
 {
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(0);     //不留边距
+    top_layout->setSpacing(0);    //控件间也没距离
+    this->setLayout(top_layout);
+
+    //Title
+    auto title_label = new QLabel(title, this);
+    top_layout->addWidget(title_label);
+
+    //Content
     this->layout = new QVBoxLayout(this);
     this->layout->setMargin(0);     //不留边距
     this->layout->setSpacing(0);    //控件间也没距离
-    this->setLayout(this->layout);
+    top_layout->addLayout(this->layout);
 
-    //控件在setWidget的时候会插进来
-
-    //底部线条
+    //底部线条 & 样式
     auto borderline = new QWidget(this);
     this->layout->addWidget(borderline);
 
-    //底部线条 样式
     QPalette pal(borderline->palette());
     pal.setColor(QPalette::Background, Qt::black);
     borderline->setPalette(pal);
@@ -67,12 +74,12 @@ ConvertInner::ConvertInner(QWidget *parent)
 
     //TODO
     auto coder = new Coder(this);
-    auto box = new CoderBox(this);
+    auto box = new CoderBox("Test1", this);
     box->setWidget(coder);
     top_layout->addWidget(box);
 
     coder = new Coder(this);
-    box = new CoderBox(this);
+    box = new CoderBox("Test2", this);
     box->setWidget(coder);
     top_layout->addWidget(box);
 

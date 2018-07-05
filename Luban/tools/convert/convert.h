@@ -21,7 +21,7 @@ class CoderBox :public QWidget
 {
     Q_OBJECT
 public:
-    CoderBox(QWidget *parent = 0);
+    CoderBox(QString title, QWidget *parent = 0);
     ~CoderBox() {}
 
     void setWidget(QWidget *widget);
