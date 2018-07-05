@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QDialog>
 #include <QLabel>
+#include <QPushButton>
 #include <QScrollArea>
 
 //每个节点都是一个Coder的子类
@@ -33,9 +34,11 @@ public:
 
     void setCoder(Coder *coder);
 private:
-    QLabel *title_label;
-    QVBoxLayout *content_layout;
-    Coder *coder;
+    QLabel *title_label = NULL;
+    QPushButton *delcur = NULL;
+    QHBoxLayout *coder_layout = NULL;
+    Coder *coder = NULL;
+    QPushButton *addnew = NULL;
 };
 
 //ConvertInner为主要实现(用QWidget不好使，需要继承实现)

@@ -12,9 +12,11 @@ Coder::Coder(QWidget *parent)
     m_name = "Test1";
     m_desc = "Desc1";
 
-    this->setMinimumHeight(400);
+    //this->setMinimumHeight(400);
 
     auto toplayout = new QVBoxLayout(this);
+    toplayout->setMargin(1);
+    toplayout->setSpacing(1);
     this->setLayout(toplayout);
 
     auto textedit = new QTextEdit(this);
@@ -34,33 +36,39 @@ CoderBox::CoderBox(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
-    top_layout->setMargin(0);     //不留边距
-    top_layout->setSpacing(0);    //控件间也没距离
+    //top_layout->setMargin(1);     //不留边距
+    //top_layout->setSpacing(1);    //控件间也没距离
     this->setLayout(top_layout);
 
+    //方框
+    auto context_box = new QWidget(this);
+    top_layout->addWidget(context_box);
+
+    //添加
+    this->addnew = new QPushButton("+", this);
+    top_layout->addWidget(this->addnew);
+
+    //方框内
+    auto content_layout = new QVBoxLayout(this);
+    context_box->setLayout(content_layout);
+
     //Title
-    auto title_layout = new QHBoxLayout(this);
-    title_layout->setSpacing(0);
-    top_layout->addLayout(title_layout);
-
     this->title_label = new QLabel(this);
-    title_layout->addWidget(this->title_label, 0, Qt::AlignHCenter);
+    content_layout->addWidget(this->title_label, 0, Qt::AlignHCenter);
 
-    //Content
-    this->content_layout = new QVBoxLayout(this);
-    this->content_layout->setMargin(0);     //不留边距
-    this->content_layout->setSpacing(0);    //控件间也没距离
-    top_layout->addLayout(this->content_layout);
+    //Title 下方
+    auto del_coder_layout = new QHBoxLayout(this);
+    content_layout->addLayout(del_coder_layout);
 
-    //底部线条 & 样式
-    auto borderline = new QWidget(this);
-    top_layout->addWidget(borderline);
+    //删除按钮
+    this->delcur = new QPushButton("Del", this);
+    del_coder_layout->addWidget(this->delcur);
 
-    QPalette pal(borderline->palette());
-    pal.setColor(QPalette::Background, Qt::black);
-    borderline->setPalette(pal);
-    borderline->setAutoFillBackground(true);
-    borderline->setFixedHeight(3);
+    //Box
+    this->coder_layout = new QHBoxLayout(this);
+    del_coder_layout->addLayout(this->coder_layout);
+
+    this->coder_layout->addWidget(new Coder(this));
 
     return;
 }
@@ -68,11 +76,12 @@ CoderBox::CoderBox(QWidget *parent)
 void CoderBox::setCoder(Coder *coder)
 {
     if (this->coder == NULL) {
+        Q_ASSERT(true);
         return;
     }
     this->coder = coder;
 
-    this->content_layout->addWidget(coder);
+    this->coder_layout->addWidget(coder);
     this->title_label->setText(coder->name());
     this->title_label->setToolTip(coder->desc());
 
@@ -91,15 +100,15 @@ ConvertInner::ConvertInner(QWidget *parent)
     auto box = new CoderBox(this);
     top_layout->addWidget(box);
 
-    auto coder = new Coder(this);
-    box->setCoder(coder);
+    //auto coder = new Coder(this);
+    //box->setCoder(coder);
 
     //
     box = new CoderBox(this);
     top_layout->addWidget(box);
 
-    coder = new Coder(this);
-    box->setCoder(coder);
+    //coder = new Coder(this);
+    //box->setCoder(coder);
 
     return;
 }
