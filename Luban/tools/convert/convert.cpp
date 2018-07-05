@@ -36,8 +36,8 @@ CoderBox::CoderBox(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
-    //top_layout->setMargin(1);     //不留边距
-    //top_layout->setSpacing(1);    //控件间也没距离
+    top_layout->setMargin(0);     //不留边距
+    top_layout->setSpacing(0);    //控件间也没距离
     this->setLayout(top_layout);
 
     //方框
@@ -50,22 +50,29 @@ CoderBox::CoderBox(QWidget *parent)
 
     //方框内
     auto content_layout = new QVBoxLayout(this);
+    content_layout->setMargin(0);
+    content_layout->setSpacing(0);
     context_box->setLayout(content_layout);
 
     //Title
-    this->title_label = new QLabel(this);
+    this->title_label = new QLabel("xxxxx", this);
     content_layout->addWidget(this->title_label, 0, Qt::AlignHCenter);
 
     //Title 下方
     auto del_coder_layout = new QHBoxLayout(this);
+    del_coder_layout->setMargin(0);
+    del_coder_layout->setSpacing(0);
     content_layout->addLayout(del_coder_layout);
 
     //删除按钮
     this->delcur = new QPushButton("Del", this);
+    this->delcur->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     del_coder_layout->addWidget(this->delcur);
 
     //Box
     this->coder_layout = new QHBoxLayout(this);
+    this->coder_layout->setMargin(0);
+    this->coder_layout->setSpacing(0);
     del_coder_layout->addLayout(this->coder_layout);
 
     this->coder_layout->addWidget(new Coder(this));
