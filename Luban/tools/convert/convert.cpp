@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QFrame>
 #include <QScrollArea>
 #include <QSplitter>
 #include <QTextEdit>
@@ -41,8 +42,9 @@ CoderBox::CoderBox(QWidget *parent)
     this->setLayout(top_layout);
 
     //方框
-    auto context_box = new QWidget(this);
-    context_box->setStyleSheet("border:1px solid red");
+    auto context_box = new QFrame(this);
+    context_box->setObjectName("context_box");
+    context_box->setStyleSheet("#context_box{border: 1px solid black;}");
     top_layout->addWidget(context_box);
 
     //添加
@@ -127,7 +129,7 @@ ConvertDialog::ConvertDialog(QWidget *parent)
 
     //
     this->setWindowTitle("Converter");
-    this->setMinimumWidth(800); //设定了最小的宽度
+    this->setMinimumWidth(1000); //设定了最小的宽度
 
     //
     auto top_layout = new QVBoxLayout(this);
