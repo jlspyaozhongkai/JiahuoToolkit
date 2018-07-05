@@ -26,15 +26,54 @@ Coder::~Coder()
     return;
 }
 
+//为Coder提供大小调整功能
+CoderBox::CoderBox(QWidget *parent)
+    : QWidget(parent)
+{
+    this->layout = new QVBoxLayout(this);
+    this->setLayout(this->layout);
+
+    auto borderline = new QWidget(this);
+    this->layout->addWidget(borderline);
+    borderline->setFixedHeight(3);
+
+    //
+    QPalette pal(borderline->palette());
+    pal.setColor(QPalette::Background, Qt::black);
+    borderline->setAutoFillBackground(true);
+    borderline->setPalette(pal);
+
+    return;
+}
+
+CoderBox::~CoderBox()
+{
+    return;
+}
+
+void CoderBox::setWidget(QWidget *widget)
+{
+    this->layout->insertWidget(0, widget);
+    return;
+}
+
+//内部为主要实现，外部实现滚动条功能
 ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
     this->setLayout(top_layout);
 
-    //
-    top_layout->addWidget(new Coder(this));
-    top_layout->addWidget(new Coder(this));
+    //TODO
+    auto coder = new Coder(this);
+    auto box = new CoderBox(this);
+    box->setWidget(coder);
+    top_layout->addWidget(box);
+
+    coder = new Coder(this);
+    box = new CoderBox(this);
+    box->setWidget(coder);
+    top_layout->addWidget(box);
 
     return;
 }
@@ -44,8 +83,8 @@ ConvertInner::~ConvertInner()
     return;
 }
 
-ConvertDialog::ConvertDialog(QDialog *parent)
-    : QDialog(parent)
+ConvertDialog::ConvertDialog(QWidget *parent)
+    : QWidget(parent)
 {
     qDebug() << "ConvertDialog::ConvertDialog";
 
@@ -79,7 +118,6 @@ void ConvertDialog::launch()
 
     ConvertDialog *win = new ConvertDialog();
 
-    win->setModal(false);
     win->show();
     win->setFocus();
 

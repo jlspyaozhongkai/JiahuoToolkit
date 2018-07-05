@@ -29,7 +29,7 @@ ClipBoardDialog::ClipBoardDialog(QWidget *parent)
     //顶上按钮
     auto flush_btn = new QPushButton("刷新:本窗体在最前是会自动刷新", this);
     toplayout->addWidget(flush_btn);
-    flush_btn->setMaximumWidth(300);
+    flush_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
 
     //下部tab

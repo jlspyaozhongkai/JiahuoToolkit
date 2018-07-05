@@ -3,6 +3,7 @@
 #ifndef TOOL_CONVERT_H
 #define TOOL_CONVERT_H
 
+#include <QVBoxLayout>
 #include <QDialog>
 
 //每个节点都是一个Coder的子类
@@ -14,6 +15,20 @@ public:
     ~Coder();
 };
 
+//为Coder及其子类提供下边缘调整大小高矮功能
+class CoderBox :public QWidget
+{
+    Q_OBJECT
+public:
+    CoderBox(QWidget *parent = 0);
+    ~CoderBox();
+
+    void setWidget(QWidget *widget);
+private:
+    QVBoxLayout *layout;
+};
+
+//ConvertInner为主要实现
 class ConvertInner : public QWidget
 {
     Q_OBJECT
@@ -22,13 +37,14 @@ public:
     ~ConvertInner();
 };
 
-class ConvertDialog : public QDialog
+//ConvertDialog为ConvertInner提供滚动条功能
+class ConvertDialog : public QWidget
 {
     Q_OBJECT
 public:
     static void launch();
 public:
-    ConvertDialog(QDialog *parent = 0);
+    ConvertDialog(QWidget *parent = 0);
     ~ConvertDialog();
 public:
 };
