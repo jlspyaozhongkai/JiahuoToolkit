@@ -8,6 +8,20 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QTabWidget>
+
+class DataView : public QWidget
+{
+    Q_OBJECT
+public:
+    DataView(QWidget *parent = 0);
+    ~DataView() {}
+
+private:
+    QTabWidget *tabwidget = NULL;
+    //Hex
+    QWidget *hex_widget = NULL;
+};
 
 //每个节点都是一个Coder的子类
 class Coder :public QWidget
@@ -15,13 +29,25 @@ class Coder :public QWidget
     Q_OBJECT
 public:
     Coder(QWidget *parent = 0);
-    ~Coder();
+    ~Coder() {}
 
     QString name() {return m_name;}
     QString desc() {return m_desc;}
+    QString m_name = "";
+    QString m_desc = "";
 private:
-    QString m_name;
-    QString m_desc;
+
+};
+
+//Coder子类，CoderInput
+class CoderInput : public Coder
+{
+    Q_OBJECT
+public:
+    CoderInput(QWidget *parent = 0);
+    ~CoderInput() {}
+private:
+    DataView *data_view = NULL;
 };
 
 //为Coder及其子类提供下边缘调整大小高矮功能

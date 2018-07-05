@@ -4,33 +4,66 @@
 #include <QScrollArea>
 #include <QSplitter>
 #include <QTextEdit>
+#include <QTabWidget>
 #include <QDebug>
 #include "convert.h"
+
+DataView::DataView(QWidget *parent)
+    : QWidget(parent)
+{
+    auto toplayout = new QVBoxLayout(this);
+    this->setLayout(toplayout);
+
+    //加入tabbar
+    this->tabwidget = new QTabWidget(this);
+    toplayout->addWidget(this->tabwidget);
+
+    //HexView
+    this->hex_widget = new QWidget(this);
+    this->tabwidget->addTab(hex_widget, "Hex");
+
+    return;
+}
 
 Coder::Coder(QWidget *parent)
     : QWidget(parent)
 {
-    m_name = "Test1";
-    m_desc = "Desc1";
+    return;
+}
 
-    //this->setMinimumHeight(400);
+CoderInput::CoderInput(QWidget *parent)
+    : Coder(parent)
+{
+    m_name = "Input";
+    m_desc = "Text input or file input";
 
     auto toplayout = new QVBoxLayout(this);
     toplayout->setMargin(1);
     toplayout->setSpacing(1);
     this->setLayout(toplayout);
 
-    auto textedit = new QTextEdit(this);
-    toplayout->addWidget(textedit);
-    textedit->setText("yyyyyyyyyy");
+    auto top_split = new QSplitter(Qt::Vertical);
+    toplayout->addWidget(top_split);
+
+    //上部输入选项区（多种输入，使用Tab）
+    auto inputtab = new QTabWidget(this);
+    top_split->addWidget(inputtab);
+
+    //Text Input
+    auto text_input_widget = new QWidget(this);
+    inputtab->addTab(text_input_widget, "Text");
+
+    //File Input
+    auto file_input_widget = new QWidget(this);
+    inputtab->addTab(file_input_widget, "File");
+
+    //下部显示区 (用现成的)
+    auto dataview = new DataView(this);
+    top_split->addWidget(dataview);
 
     return;
 }
 
-Coder::~Coder()
-{
-    return;
-}
 
 //为Coder提供大小调整功能
 CoderBox::CoderBox(QWidget *parent)
@@ -105,18 +138,11 @@ ConvertInner::ConvertInner(QWidget *parent)
     top_layout->setSpacing(0);
     this->setLayout(top_layout);
 
-    //TODO
+    //默认放一个Input节点。
     auto box = new CoderBox(this);
     top_layout->addWidget(box);
 
-    auto coder = new Coder(this);
-    box->setCoder(coder);
-
-    //
-    box = new CoderBox(this);
-    top_layout->addWidget(box);
-
-    coder = new Coder(this);
+    auto coder = new CoderInput(this);
     box->setCoder(coder);
 
     return;
