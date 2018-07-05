@@ -51,11 +51,6 @@ CoderBox::CoderBox(QWidget *parent)
     return;
 }
 
-CoderBox::~CoderBox()
-{
-    return;
-}
-
 void CoderBox::setWidget(QWidget *widget)
 {
     this->layout->insertWidget(0, widget);
@@ -84,40 +79,31 @@ ConvertInner::ConvertInner(QWidget *parent)
     return;
 }
 
-ConvertInner::~ConvertInner()
-{
-    return;
-}
-
 ConvertDialog::ConvertDialog(QWidget *parent)
     : QWidget(parent)
 {
     qDebug() << "ConvertDialog::ConvertDialog";
 
+    //
     this->setWindowTitle("Converter");
-    this->setMinimumWidth(800);
+    this->setMinimumWidth(800); //设定了最小的宽度
 
     //
     auto top_layout = new QVBoxLayout(this);
-    top_layout->setMargin(0);       //只有这一个控件，占满整个窗体
+    top_layout->setMargin(0);   //只有这一个控件，占满整个窗体，所以不留边距
     this->setLayout(top_layout);
 
     //
     auto top_scroll = new QScrollArea(this);
     top_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    top_scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    top_scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);  //把QScrollArea撑满整个ConvertDialog
+    top_scroll->setWidgetResizable(true);   //里边的ConvertInner会自动撑大
     top_layout->addWidget(top_scroll);
 
     //
     auto top_widget = new ConvertInner(this);
-    top_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     top_scroll->setWidget(top_widget);
 
-    return;
-}
-
-ConvertDialog::~ConvertDialog()
-{
     return;
 }
 

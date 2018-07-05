@@ -94,11 +94,6 @@ ClipBoardDialog::ClipBoardDialog(QWidget *parent)
     return;
 }
 
-ClipBoardDialog::~ClipBoardDialog()
-{
-    return;
-}
-
 void ClipBoardDialog::flush()
 {
     qDebug() << "ClipBoardDialog::flush";

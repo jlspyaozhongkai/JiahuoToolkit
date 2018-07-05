@@ -226,11 +226,6 @@ AsciiDialog::AsciiDialog(QWidget *parent)
     return;
 }
 
-AsciiDialog::~AsciiDialog()
-{
-    return;
-}
-
 void AsciiDialog::launch()
 {
     qDebug() << "AsciiDialog::launch";

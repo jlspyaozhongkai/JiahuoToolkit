@@ -16,7 +16,7 @@ public:
     static void launch();
 public:
     ClipBoardDialog(QWidget *parent = 0);
-    ~ClipBoardDialog();
+    ~ClipBoardDialog() {}
 public:
     void flush();    //刷新
 private:

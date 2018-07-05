@@ -12,7 +12,7 @@ public:
     static void launch();
 public:
     AsciiDialog(QWidget *parent = 0);
-    ~AsciiDialog();
+    ~AsciiDialog() {}
 private:
 
 };
