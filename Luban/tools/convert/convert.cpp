@@ -9,7 +9,7 @@
 Coder::Coder(QWidget *parent)
     : QWidget(parent)
 {
-    this->setFixedHeight(700);
+    this->setFixedHeight(400);
 
     auto toplayout = new QVBoxLayout(this);
     this->setLayout(toplayout);
@@ -33,15 +33,16 @@ CoderBox::CoderBox(QWidget *parent)
     this->layout = new QVBoxLayout(this);
     this->setLayout(this->layout);
 
+    //底部线条
     auto borderline = new QWidget(this);
     this->layout->addWidget(borderline);
-    borderline->setFixedHeight(3);
 
-    //
+    //底部线条 样式
     QPalette pal(borderline->palette());
     pal.setColor(QPalette::Background, Qt::black);
-    borderline->setAutoFillBackground(true);
     borderline->setPalette(pal);
+    borderline->setAutoFillBackground(true);
+    borderline->setFixedHeight(3);
 
     return;
 }
@@ -97,11 +98,13 @@ ConvertDialog::ConvertDialog(QWidget *parent)
 
     //
     auto top_scroll = new QScrollArea(this);
-    top_layout->addWidget(top_scroll);
     top_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    top_scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    top_layout->addWidget(top_scroll);
 
     //
     auto top_widget = new ConvertInner(this);
+    top_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     top_scroll->setWidget(top_widget);
 
     return;

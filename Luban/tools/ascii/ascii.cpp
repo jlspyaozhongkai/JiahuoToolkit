@@ -162,7 +162,6 @@ AsciiDialog::AsciiDialog(QWidget *parent)
 
     //
     auto table = new QTableWidget(this);
-    toplayout->addWidget(table);
     assert(sizeof(ascii_datas)/sizeof(ascii_datas[0]) == 128);
     table->setColumnCount(4);
     table->setHorizontalHeaderLabels(QStringList() << "10进制值" << "16进制值" << "控制符" << "说明");
@@ -193,13 +192,12 @@ AsciiDialog::AsciiDialog(QWidget *parent)
         item->setFlags(item->flags() & (~Qt::ItemIsEditable));
         table->setItem(iloop, 3, item);
     }
+    toplayout->addWidget(table);
 
     //
     toplayout->addWidget(new QLabel("说明:", this));
 
     //
-    auto notes_edit = new QTextEdit(this);
-    toplayout->addWidget(notes_edit);
     QString notes =
     "协议标准 rfc20:<br/>"
     "https://datatracker.ietf.org/doc/rfc20/<br/>"
@@ -220,8 +218,10 @@ AsciiDialog::AsciiDialog(QWidget *parent)
     "<tr><td>\n</td><td>10</td><td>0A</td></tr>"
     "</table>"
     "<br/><br/>";
+    auto notes_edit = new QTextEdit(this);
     notes_edit->setHtml(notes);
     notes_edit->setReadOnly(true);
+    toplayout->addWidget(notes_edit);
 
     return;
 }

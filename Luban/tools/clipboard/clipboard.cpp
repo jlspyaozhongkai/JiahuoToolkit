@@ -28,9 +28,9 @@ ClipBoardDialog::ClipBoardDialog(QWidget *parent)
 
     //顶上按钮
     auto flush_btn = new QPushButton("刷新:本窗体在最前是会自动刷新", this);
-    toplayout->addWidget(flush_btn);
     flush_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(flush_btn, &QPushButton::pressed, [this]{this->flush();});
+    toplayout->addWidget(flush_btn);
 
     //下部tab
     this->main_tab = new QTabWidget(this);
@@ -39,44 +39,53 @@ ClipBoardDialog::ClipBoardDialog(QWidget *parent)
     //文本
     this->textTab = new QWidget(this);
     this->main_tab->addTab(this->textTab, "Text");
+
     auto layout = new QVBoxLayout(this);
     this->textTab->setLayout(layout);
+
     this->textShow = new QTextEdit(this);
-    layout->addWidget(this->textShow);
     this->textShow->setReadOnly(true);
     this->textShow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    layout->addWidget(this->textShow);
 
     //Pixmap
     this->pixmapTab = new QWidget(this);
     this->main_tab->addTab(this->pixmapTab, "PixMap");
+
     layout = new QVBoxLayout(this);
     this->pixmapTab->setLayout(layout);
+
     QScrollArea *scroll = new QScrollArea(this);
-    layout->addWidget(scroll);
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    layout->addWidget(scroll);
+
     this->pixmapShow = new QLabel(this);
     scroll->setWidget(this->pixmapShow);
 
     //Image
     this->imageTab = new QWidget(this);
     this->main_tab->addTab(this->imageTab, "Image");
+
     layout = new QVBoxLayout(this);
     this->imageTab->setLayout(layout);
+
     scroll = new QScrollArea(this);
-    layout->addWidget(scroll);
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    layout->addWidget(scroll);
+
     this->imageShow = new QLabel(this);
     scroll->setWidget(this->imageShow);
 
     //Mime
     this->mimeTab = new QWidget(this);
     this->main_tab->addTab(this->mimeTab, "Mime");
+
     layout = new QVBoxLayout(this);
     this->mimeTab->setLayout(layout);
 
     this->mimeShow = new QTextEdit(this);
-    layout->addWidget(this->mimeShow);
     this->mimeShow->setReadOnly(true);
+    layout->addWidget(this->mimeShow);
 
     //
     QClipboard *board = QApplication::clipboard();
