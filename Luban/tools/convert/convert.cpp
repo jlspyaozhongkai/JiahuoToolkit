@@ -42,6 +42,7 @@ CoderBox::CoderBox(QWidget *parent)
 
     //方框
     auto context_box = new QWidget(this);
+    context_box->setStyleSheet("border:1px solid red");
     top_layout->addWidget(context_box);
 
     //添加
@@ -55,7 +56,7 @@ CoderBox::CoderBox(QWidget *parent)
     context_box->setLayout(content_layout);
 
     //Title
-    this->title_label = new QLabel("xxxxx", this);
+    this->title_label = new QLabel("", this);
     content_layout->addWidget(this->title_label, 0, Qt::AlignHCenter);
 
     //Title 下方
@@ -64,25 +65,23 @@ CoderBox::CoderBox(QWidget *parent)
     del_coder_layout->setSpacing(0);
     content_layout->addLayout(del_coder_layout);
 
-    //删除按钮
+    //左面 删除按钮
     this->delcur = new QPushButton("Del", this);
     this->delcur->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     del_coder_layout->addWidget(this->delcur);
 
-    //Box
+    //右边 Box
     this->coder_layout = new QHBoxLayout(this);
     this->coder_layout->setMargin(0);
     this->coder_layout->setSpacing(0);
     del_coder_layout->addLayout(this->coder_layout);
-
-    this->coder_layout->addWidget(new Coder(this));
 
     return;
 }
 
 void CoderBox::setCoder(Coder *coder)
 {
-    if (this->coder == NULL) {
+    if (this->coder != NULL) {
         Q_ASSERT(true);
         return;
     }
@@ -100,22 +99,23 @@ ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
-    top_layout->setMargin(0);       //不留边距
+    top_layout->setMargin(0);
+    top_layout->setSpacing(0);
     this->setLayout(top_layout);
 
     //TODO
     auto box = new CoderBox(this);
     top_layout->addWidget(box);
 
-    //auto coder = new Coder(this);
-    //box->setCoder(coder);
+    auto coder = new Coder(this);
+    box->setCoder(coder);
 
     //
     box = new CoderBox(this);
     top_layout->addWidget(box);
 
-    //coder = new Coder(this);
-    //box->setCoder(coder);
+    coder = new Coder(this);
+    box->setCoder(coder);
 
     return;
 }
