@@ -31,7 +31,11 @@ CoderBox::CoderBox(QWidget *parent)
     : QWidget(parent)
 {
     this->layout = new QVBoxLayout(this);
+    this->layout->setMargin(0);     //不留边距
+    this->layout->setSpacing(0);    //控件间也没距离
     this->setLayout(this->layout);
+
+    //控件在setWidget的时候会插进来
 
     //底部线条
     auto borderline = new QWidget(this);
@@ -63,6 +67,7 @@ ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(0);       //不留边距
     this->setLayout(top_layout);
 
     //TODO
@@ -94,6 +99,7 @@ ConvertDialog::ConvertDialog(QWidget *parent)
 
     //
     auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(0);       //只有这一个控件，占满整个窗体
     this->setLayout(top_layout);
 
     //
