@@ -9,7 +9,10 @@
 Coder::Coder(QWidget *parent)
     : QWidget(parent)
 {
-    this->setFixedHeight(400);
+    m_name = "Test1";
+    m_desc = "Desc1";
+
+    this->setMinimumHeight(400);
 
     auto toplayout = new QVBoxLayout(this);
     this->setLayout(toplayout);
@@ -27,7 +30,7 @@ Coder::~Coder()
 }
 
 //为Coder提供大小调整功能
-CoderBox::CoderBox(QString title, QWidget *parent)
+CoderBox::CoderBox(QWidget *parent)
     : QWidget(parent)
 {
     auto top_layout = new QVBoxLayout(this);
@@ -36,18 +39,22 @@ CoderBox::CoderBox(QString title, QWidget *parent)
     this->setLayout(top_layout);
 
     //Title
-    auto title_label = new QLabel(title, this);
-    top_layout->addWidget(title_label);
+    auto title_layout = new QHBoxLayout(this);
+    title_layout->setSpacing(0);
+    top_layout->addLayout(title_layout);
+
+    this->title_label = new QLabel(this);
+    title_layout->addWidget(this->title_label, 0, Qt::AlignHCenter);
 
     //Content
-    this->layout = new QVBoxLayout(this);
-    this->layout->setMargin(0);     //不留边距
-    this->layout->setSpacing(0);    //控件间也没距离
-    top_layout->addLayout(this->layout);
+    this->content_layout = new QVBoxLayout(this);
+    this->content_layout->setMargin(0);     //不留边距
+    this->content_layout->setSpacing(0);    //控件间也没距离
+    top_layout->addLayout(this->content_layout);
 
     //底部线条 & 样式
     auto borderline = new QWidget(this);
-    this->layout->addWidget(borderline);
+    top_layout->addWidget(borderline);
 
     QPalette pal(borderline->palette());
     pal.setColor(QPalette::Background, Qt::black);
@@ -58,9 +65,17 @@ CoderBox::CoderBox(QString title, QWidget *parent)
     return;
 }
 
-void CoderBox::setWidget(QWidget *widget)
+void CoderBox::setCoder(Coder *coder)
 {
-    this->layout->insertWidget(0, widget);
+    if (this->coder == NULL) {
+        return;
+    }
+    this->coder = coder;
+
+    this->content_layout->addWidget(coder);
+    this->title_label->setText(coder->name());
+    this->title_label->setToolTip(coder->desc());
+
     return;
 }
 
@@ -73,15 +88,18 @@ ConvertInner::ConvertInner(QWidget *parent)
     this->setLayout(top_layout);
 
     //TODO
+    auto box = new CoderBox(this);
+    top_layout->addWidget(box);
+
     auto coder = new Coder(this);
-    auto box = new CoderBox("Test1", this);
-    box->setWidget(coder);
+    box->setCoder(coder);
+
+    //
+    box = new CoderBox(this);
     top_layout->addWidget(box);
 
     coder = new Coder(this);
-    box = new CoderBox("Test2", this);
-    box->setWidget(coder);
-    top_layout->addWidget(box);
+    box->setCoder(coder);
 
     return;
 }
