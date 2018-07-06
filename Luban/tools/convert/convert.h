@@ -16,6 +16,21 @@
 //数据缓冲区和数据类型描述，设计上允许拷贝（效率问题不大）
 class CodeData {
 public:
+    enum DataType {
+        TYPE_NONE = 0,
+        TYPE_BYTES = 1,          //字节流
+        TYPE_TEXT,               //字符，需要指定字符集才能正常使用
+        TYPE_MAX,
+    };
+    enum CharSet {
+        CHARSET_NONE = 0,
+        CHARSET_UTF8 = 1,
+        CHARSET_UTF16,
+        CHARSET_UTF32,
+        CHARSET_GBK,
+        CHARSET_MAX,
+    };
+
     CodeData() {
         return;
     }
@@ -27,9 +42,10 @@ public:
     ~CodeData() {
         return;
     }
-private:
-    QByteArray m_buf;
 
+    QByteArray m_buf;
+    DataType m_type = TYPE_NONE;
+    CharSet m_charset = CHARSET_NONE;
 };
 
 class DataView : public QWidget
@@ -38,7 +54,7 @@ class DataView : public QWidget
 public:
     DataView(QWidget *parent = 0);
     ~DataView() {}
-
+    void setData(CodeData *data);   //If data is null, clear data view.
 private:
     QTabWidget *tabwidget = NULL;
     //Hex
@@ -57,6 +73,8 @@ public:
     QString desc() {return m_desc;}
     void setName(QString name) {this->m_name = name;}
     void setDesc(QString desc) {this->m_desc = desc;}
+
+    virtual CodeData io(CodeData input) = 0;        //输入输出
 private:
     QString m_name = "";
     QString m_desc = "";
@@ -69,7 +87,11 @@ class CoderInput : public Coder
 public:
     CoderInput(QWidget *parent = 0);
     ~CoderInput() {}
+
+    CodeData io(CodeData input);
 private:
+    CodeData m_data;
+
     QTextEdit *text_edit = NULL;
 
     QLineEdit *file_path = NULL;

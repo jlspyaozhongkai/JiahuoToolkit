@@ -28,6 +28,12 @@ DataView::DataView(QWidget *parent)
     return;
 }
 
+void DataView::setData(CodeData *data)
+{
+
+    return;
+}
+
 Coder::Coder(QWidget *parent)
     : QWidget(parent)
 {
@@ -104,6 +110,12 @@ CoderInput::CoderInput(QWidget *parent)
     });
 
     return;
+}
+
+CodeData CoderInput::io(CodeData input)
+{
+    CodeData xxx;
+    return xxx;
 }
 
 void CoderInput::flushText()
