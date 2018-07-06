@@ -37,8 +37,8 @@ Coder::Coder(QWidget *parent)
 CoderInput::CoderInput(QWidget *parent)
     : Coder(parent)
 {
-    m_name = "Input";
-    m_desc = "Text input or file input";
+    this->setName("Input");
+    this->setDesc("Text input or file input");
 
     auto toplayout = new QVBoxLayout(this);
     toplayout->setMargin(1);

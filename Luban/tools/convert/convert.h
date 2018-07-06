@@ -3,6 +3,7 @@
 #ifndef TOOL_CONVERT_H
 #define TOOL_CONVERT_H
 
+#include <QByteArray>
 #include <QVBoxLayout>
 #include <QDialog>
 #include <QLabel>
@@ -11,6 +12,25 @@
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QLineEdit>
+
+//数据缓冲区和数据类型描述，设计上允许拷贝（效率问题不大）
+class CodeData {
+public:
+    CodeData() {
+        return;
+    }
+    CodeData(const CodeData& from) {
+        this->m_buf.clear();
+        this->m_buf.append(from.m_buf);
+        return;
+    }
+    ~CodeData() {
+        return;
+    }
+private:
+    QByteArray m_buf;
+
+};
 
 class DataView : public QWidget
 {
@@ -35,10 +55,11 @@ public:
 
     QString name() {return m_name;}
     QString desc() {return m_desc;}
+    void setName(QString name) {this->m_name = name;}
+    void setDesc(QString desc) {this->m_desc = desc;}
+private:
     QString m_name = "";
     QString m_desc = "";
-private:
-
 };
 
 //Coder子类，CoderInput
