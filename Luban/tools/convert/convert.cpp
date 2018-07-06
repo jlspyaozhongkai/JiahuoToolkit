@@ -5,6 +5,9 @@
 #include <QSplitter>
 #include <QTextEdit>
 #include <QTabWidget>
+#include <QPushButton>
+#include <QFileDialog>
+#include <QDir>
 #include <QDebug>
 #include "convert.h"
 
@@ -53,13 +56,46 @@ CoderInput::CoderInput(QWidget *parent)
     auto text_input_widget = new QWidget(this);
     inputtab->addTab(text_input_widget, "Text");
 
+    auto text_input_layout = new QHBoxLayout(this);
+    text_input_layout->setMargin(1);
+    text_input_layout->setSpacing(0);
+    text_input_widget->setLayout(text_input_layout);
+
+    this->text_edit = new QTextEdit(this);
+    text_input_layout->addWidget(text_edit);
+
     //File Input
     auto file_input_widget = new QWidget(this);
     inputtab->addTab(file_input_widget, "File");
 
+    auto file_input_layout = new QHBoxLayout(this);
+    file_input_layout->setMargin(1);
+    file_input_layout->setSpacing(0);
+    file_input_widget->setLayout(file_input_layout);
+
+    file_input_layout->addWidget(new QLabel("File Path:", this));
+
+    this->file_path = new QLineEdit(this);
+    file_input_layout->addWidget(this->file_path);
+
+    auto file_input_browse = new QPushButton("Browse", this);
+    file_input_browse->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    file_input_layout->addWidget(file_input_browse);
+
+    auto file_input_reload = new QPushButton("Reload", this);
+    file_input_reload->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    file_input_layout->addWidget(file_input_reload);
+
     //下部显示区 (用现成的)
     auto dataview = new DataView(this);
     top_split->addWidget(dataview);
+
+    //
+    connect(file_input_browse, &QPushButton::pressed, [this]{
+                                                            QString file_name = QFileDialog::getOpenFileName(
+                                                                                 this, "Open File", QDir::homePath(), "File (*.*)");
+                                                            this->file_path->setText(file_name);
+                                                            });
 
     return;
 }

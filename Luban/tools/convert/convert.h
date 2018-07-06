@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QTabWidget>
+#include <QTextEdit>
+#include <QLineEdit>
 
 class DataView : public QWidget
 {
@@ -47,6 +49,10 @@ public:
     CoderInput(QWidget *parent = 0);
     ~CoderInput() {}
 private:
+    QTextEdit *text_edit = NULL;
+
+    QLineEdit *file_path = NULL;
+
     DataView *data_view = NULL;
 };
 
