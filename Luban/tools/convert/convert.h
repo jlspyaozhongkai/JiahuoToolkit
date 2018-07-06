@@ -19,16 +19,15 @@ public:
     enum DataType {
         TYPE_NONE = 0,
         TYPE_BYTES = 1,          //字节流
-        TYPE_TEXT,               //字符，需要指定字符集才能正常使用
+
+        TYPE_TEXT_MIN,           //字符集文本
+        TYPE_TEXT_UTF8,
+        TYPE_TEXT_UTF16,
+        TYPE_TEXT_UTF32,
+        TYPE_TEXT_GBK,
+        TYPE_TEXT_MAX,
+
         TYPE_MAX,
-    };
-    enum CharSet {
-        CHARSET_NONE = 0,
-        CHARSET_UTF8 = 1,
-        CHARSET_UTF16,
-        CHARSET_UTF32,
-        CHARSET_GBK,
-        CHARSET_MAX,
     };
 
     CodeData() {
@@ -45,7 +44,6 @@ public:
 
     QByteArray m_buf;
     DataType m_type = TYPE_NONE;
-    CharSet m_charset = CHARSET_NONE;
 };
 
 class DataView : public QWidget
@@ -59,6 +57,11 @@ private:
     QTabWidget *tabwidget = NULL;
     //Hex
     QWidget *hex_widget = NULL;
+    QTextEdit *hex_edit = NULL;
+    //UTF8
+    QWidget *utf8_widget = NULL;
+    QTextEdit *utf8_edit = NULL;
+    //
 };
 
 //每个节点都是一个Coder的子类

@@ -25,11 +25,32 @@ DataView::DataView(QWidget *parent)
     this->hex_widget = new QWidget(this);
     this->tabwidget->addTab(hex_widget, "Hex");
 
+    auto hex_layout = new QVBoxLayout(this);
+    hex_layout->setMargin(1);
+    hex_layout->setSpacing(1);
+    hex_widget->setLayout(hex_layout);
+
+    this->hex_edit = new QTextEdit(this);
+    hex_layout->addWidget(this->hex_edit);
+
+    //UTF-8
+    this->utf8_widget = new QWidget(this);
+    this->tabwidget->addTab(utf8_widget, "UTF-8");
+
+    auto utf8_layout = new QVBoxLayout(this);
+    utf8_layout->setMargin(1);
+    utf8_layout->setSpacing(1);
+    utf8_widget->setLayout(utf8_layout);
+
+    this->utf8_edit = new QTextEdit(this);
+    utf8_layout->addWidget(this->utf8_edit);
+
     return;
 }
 
 void DataView::setData(CodeData *data)
 {
+
 
     return;
 }
@@ -114,13 +135,19 @@ CoderInput::CoderInput(QWidget *parent)
 
 CodeData CoderInput::io(CodeData input)
 {
-    CodeData xxx;
-    return xxx;
+    Q_UNUSED(input);
+    return this->m_data;
 }
 
 void CoderInput::flushText()
 {
     qDebug() << "CoderInput::flushText";
+
+    this->m_data.m_buf.clear();
+    this->m_data.m_buf.append(this->text_edit->toPlainText().toUtf8());
+    this->m_data.m_type = CodeData::TYPE_TEXT_UTF8;
+
+    this->data_view->setData(& this->m_data);
     return;
 }
 
