@@ -90,16 +90,33 @@ CoderInput::CoderInput(QWidget *parent)
     auto dataview = new DataView(this);
     top_split->addWidget(dataview);
 
-    //
-    connect(file_input_browse, &QPushButton::pressed, [this]{
-                                                            QString file_name = QFileDialog::getOpenFileName(
-                                                                                 this, "Open File", QDir::homePath(), "File (*.*)");
-                                                            this->file_path->setText(file_name);
-                                                            });
+    //文本变化的时候，刷新文本输入
+    connect(this->text_edit, &QTextEdit::textChanged, [this]{
+        this->flushText();
+    });
+
+    //路径变化（包括browse）或者reload的时候，刷新文件输入
+    connect(file_input_reload, &QPushButton::pressed, [this]{
+        this->flushFile();
+    });
+    connect(this->file_path, &QLineEdit::textChanged, [this]{
+        this->flushFile();
+    });
 
     return;
 }
 
+void CoderInput::flushText()
+{
+    qDebug() << "CoderInput::flushText";
+    return;
+}
+
+void CoderInput::flushFile()
+{
+    qDebug() << "CoderInput::flushFile";
+    return;
+}
 
 //为Coder提供大小调整功能
 CoderBox::CoderBox(QWidget *parent)

@@ -54,6 +54,9 @@ private:
     QLineEdit *file_path = NULL;
 
     DataView *data_view = NULL;
+
+    void flushText();
+    void flushFile();
 };
 
 //为Coder及其子类提供下边缘调整大小高矮功能
