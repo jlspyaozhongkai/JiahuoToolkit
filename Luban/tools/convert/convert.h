@@ -98,6 +98,7 @@ private:
     QTextEdit *text_edit = NULL;
 
     QLineEdit *file_path = NULL;
+    QLabel *file_err = NULL;
 
     DataView *data_view = NULL;
 

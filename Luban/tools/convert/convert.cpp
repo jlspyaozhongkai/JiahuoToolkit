@@ -102,10 +102,14 @@ CoderInput::CoderInput(QWidget *parent)
     auto file_input_widget = new QWidget(this);
     inputtab->addTab(file_input_widget, "File");
 
+    auto file_input_top_layout = new QVBoxLayout(this);
+    file_input_top_layout->setSpacing(0);
+    file_input_widget->setLayout(file_input_top_layout);
+
     auto file_input_layout = new QHBoxLayout(this);
-    file_input_layout->setMargin(1);
+    file_input_layout->setMargin(0);
     file_input_layout->setSpacing(0);
-    file_input_widget->setLayout(file_input_layout);
+    file_input_top_layout->addLayout(file_input_layout);
 
     file_input_layout->addWidget(new QLabel("File Path:", this));
 
@@ -120,7 +124,12 @@ CoderInput::CoderInput(QWidget *parent)
     file_input_reload->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     file_input_layout->addWidget(file_input_reload);
 
-    //下部显示区 (用现成的)
+    this->file_err = new QLabel("", this);
+    this->file_err->setObjectName("file_input_err");
+    this->file_err->setStyleSheet("#file_input_err{color:red;}");
+    file_input_top_layout->addWidget(this->file_err);
+
+    //下部显示区 (用现成的 DataView)
     this->data_view = new DataView(this);
     top_split->addWidget(this->data_view);
 
@@ -130,6 +139,10 @@ CoderInput::CoderInput(QWidget *parent)
     });
 
     //路径变化（包括browse）或者reload的时候，刷新文件输入
+    connect(file_input_browse, &QPushButton::pressed, [this]{
+        QString path = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath(), "File (*.*)");
+        this->file_path->setText(path);
+    });
     connect(file_input_reload, &QPushButton::pressed, [this]{
         this->flushFile();
     });
@@ -150,17 +163,42 @@ void CoderInput::flushText()
 {
     qDebug() << "CoderInput::flushText";
 
+    //文本统一使用utf8
     this->m_data.m_buf.clear();
     this->m_data.m_buf.append(this->text_edit->toPlainText().toUtf8());
     this->m_data.m_type = CodeData::TYPE_TEXT_UTF8;
 
-    this->data_view->setData(& this->m_data);
+    this->data_view->setData(&this->m_data);
     return;
 }
 
 void CoderInput::flushFile()
 {
     qDebug() << "CoderInput::flushFile";
+
+    this->file_err->setText("");
+    this->m_data.m_buf.clear();
+    this->m_data.m_type = CodeData::TYPE_NONE;
+    this->data_view->setData(&this->m_data);
+
+    //加载文件
+    auto filepath = this->file_path->text();
+    if (filepath == "") {
+        return;
+    }
+    QFile file(filepath);
+    if (! file.open(QFile::ReadOnly)) {
+        this->file_err->setText(file.errorString());
+        return;
+    }
+    auto filedata = file.readAll();
+    file.close();
+
+    this->m_data.m_buf.append(filedata);
+    this->m_data.m_type = CodeData::TYPE_BYTES;
+
+    this->data_view->setData(&this->m_data);
+
     return;
 }
 
