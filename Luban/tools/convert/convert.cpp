@@ -50,7 +50,14 @@ DataView::DataView(QWidget *parent)
 
 void DataView::setData(CodeData *data)
 {
+    if (data == NULL) {
+        this->hex_edit->setText("");
+        this->utf8_edit->setText("");
+        return;
+    }
 
+    //UTF-8d
+    this->utf8_edit->setText(QString::fromUtf8(data->m_buf));
 
     return;
 }
@@ -114,8 +121,8 @@ CoderInput::CoderInput(QWidget *parent)
     file_input_layout->addWidget(file_input_reload);
 
     //下部显示区 (用现成的)
-    auto dataview = new DataView(this);
-    top_split->addWidget(dataview);
+    this->data_view = new DataView(this);
+    top_split->addWidget(this->data_view);
 
     //文本变化的时候，刷新文本输入
     connect(this->text_edit, &QTextEdit::textChanged, [this]{
