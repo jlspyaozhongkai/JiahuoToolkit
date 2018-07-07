@@ -36,6 +36,7 @@ DataView::DataView(QWidget *parent)
     this->hex_edit->setReadOnly(true);
     this->hex_edit->setLineWrapMode(QTextEdit::NoWrap);
     QFont adjust_font(this->hex_edit->font());
+    adjust_font.setFamily("Courier");       //等宽字体
     this->hex_edit->setFont(adjust_font);
     hex_layout->addWidget(this->hex_edit);
 
@@ -78,7 +79,7 @@ void DataView::setData(CodeData *data)
         } else {
             line_str += QString::asprintf(".");
         }
-        if ((iloop + 1) % 8 == 0) {
+        if ((iloop + 1) % 16 == 7) {
             line_hex += " ";
         }
         if ((iloop + 1) % 16 == 0 || iloop + 1 == length) { //16个byte一行 一行结束 或者 整个数组结束
@@ -86,8 +87,8 @@ void DataView::setData(CodeData *data)
                 int remain = 16 - 1 - iloop % 16;
                 int jloop;
                 for (jloop = 0; jloop < remain; jloop++) {
-                    line_hex += "  ";
-                    line_str += " ";
+                    line_hex += "   ";  //"___";
+                    line_str += " ";    //"_";
                 }
                 if (remain > 8) {
                     line_hex += " ";
