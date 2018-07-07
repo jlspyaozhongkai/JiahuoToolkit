@@ -182,16 +182,26 @@ CoderInput::CoderInput(QWidget *parent)
     this->data_view = new DataView(this);
     top_split->addWidget(this->data_view);
 
+    //TODO:这里有 图方便代码，按照加入tab的顺序识别标签
+    connect(inputtab, &QTabWidget::currentChanged, [this](int index){
+        if (index == 0) {
+            this->flushText();
+        } else if (index == 1) {
+            this->flushFile();
+        }
+    });
+
     //文本变化的时候，刷新文本输入
     connect(this->text_edit, &QTextEdit::textChanged, [this]{
         this->flushText();
     });
 
-    //路径变化（包括browse）或者reload的时候，刷新文件输入
+    //浏览文件路径
     connect(file_input_browse, &QPushButton::pressed, [this]{
         QString path = QFileDialog::getOpenFileName(this, "Open File", QDir::homePath(), "File (*.*)");
         this->file_path->setText(path);
     });
+    //路径变化时，刷新文件输入
     connect(file_input_reload, &QPushButton::pressed, [this]{
         this->flushFile();
     });
@@ -232,22 +242,20 @@ void CoderInput::flushFile()
 
     //加载文件
     auto filepath = this->file_path->text();
-    if (filepath == "") {
-        return;
-    }
-    QFile file(filepath);
-    if (! file.open(QFile::ReadOnly)) {
-        this->file_err->setText(file.errorString());
-        return;
-    }
-    auto filedata = file.readAll();
-    file.close();
+    if (filepath != "") {
+        QFile file(filepath);
+        if (! file.open(QFile::ReadOnly)) {
+            this->file_err->setText(file.errorString());
+            return;
+        }
+        auto filedata = file.readAll();
+        file.close();
 
-    this->m_data.m_buf.append(filedata);
-    this->m_data.m_type = CodeData::TYPE_BYTES;
+        this->m_data.m_buf.append(filedata);
+        this->m_data.m_type = CodeData::TYPE_BYTES;
+    }
 
     this->data_view->setData(&this->m_data);
-
     return;
 }
 
