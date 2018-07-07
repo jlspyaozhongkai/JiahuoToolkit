@@ -15,6 +15,8 @@ DataView::DataView(QWidget *parent)
     : QWidget(parent)
 {
     auto toplayout = new QVBoxLayout(this);
+    toplayout->setMargin(1);
+    toplayout->setSpacing(1);
     this->setLayout(toplayout);
 
     //加入tabbar
@@ -31,6 +33,7 @@ DataView::DataView(QWidget *parent)
     hex_widget->setLayout(hex_layout);
 
     this->hex_edit = new QTextEdit(this);
+    this->hex_edit->setReadOnly(true);
     hex_layout->addWidget(this->hex_edit);
 
     //UTF-8
@@ -43,10 +46,13 @@ DataView::DataView(QWidget *parent)
     utf8_widget->setLayout(utf8_layout);
 
     this->utf8_edit = new QTextEdit(this);
+    this->utf8_edit->setReadOnly(true);
     utf8_layout->addWidget(this->utf8_edit);
 
     return;
 }
+
+
 
 void DataView::setData(CodeData *data)
 {
@@ -56,7 +62,48 @@ void DataView::setData(CodeData *data)
         return;
     }
 
-    //UTF-8d
+    //Hex
+    QString lines;      //所有行的集合
+    QString line_hex;   //每行的hex部分
+    QString line_str;   //后边的字符部分
+    int length = data->m_buf.length();
+    int iloop;
+    for (iloop = 0; iloop < length; iloop++) {
+        char ch = data->m_buf.at(iloop);
+        line_hex += QString::asprintf("%02X ", ch);
+        QChar qch(ch);
+        if (qch.isPrint()) {
+            line_str += QString::asprintf("%c", ch);
+        } else {
+            line_str += QString::asprintf(".");
+        }
+        if ((iloop + 1) % 8 == 0) {
+            line_hex += " ";
+        }
+        if ((iloop + 1) % 16 == 0 || iloop + 1 == length) { //16个byte一行 一行结束 或者 整个数组结束
+            if (iloop + 1 == length && (iloop + 1) % 16 != 0) {
+                int remain = 16 - 1 - iloop % 16;
+                int jloop;
+                for (jloop = 0; jloop < remain; jloop++) {
+                    line_hex += "  ";
+                    line_str += " ";
+                }
+                if (remain > 8) {
+                    line_hex += " ";
+                }
+            }
+            lines += QString::asprintf("%08X    ", iloop / 16 * 16);
+            lines += line_hex;
+            lines += "   ";
+            lines += QString("|") + line_str + "|\n";
+
+            line_hex.clear();
+            line_str.clear();
+        }
+    }
+    this->hex_edit->setText(lines);
+
+    //UTF-8
     this->utf8_edit->setText(QString::fromUtf8(data->m_buf));
 
     return;
