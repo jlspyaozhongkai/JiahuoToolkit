@@ -30,7 +30,7 @@ DataView::DataView(QWidget *parent)
     auto hex_layout = new QVBoxLayout(this);
     hex_layout->setMargin(1);
     hex_layout->setSpacing(1);
-    hex_widget->setLayout(hex_layout);
+    this->hex_widget->setLayout(hex_layout);
 
     this->hex_edit = new QTextEdit(this);
     this->hex_edit->setReadOnly(true);
@@ -42,16 +42,29 @@ DataView::DataView(QWidget *parent)
 
     //UTF-8
     this->utf8_widget = new QWidget(this);
-    this->tabwidget->addTab(utf8_widget, "UTF-8");
+    this->tabwidget->addTab(this->utf8_widget, "UTF-8");
 
     auto utf8_layout = new QVBoxLayout(this);
     utf8_layout->setMargin(1);
     utf8_layout->setSpacing(1);
-    utf8_widget->setLayout(utf8_layout);
+    this->utf8_widget->setLayout(utf8_layout);
 
     this->utf8_edit = new QTextEdit(this);
     this->utf8_edit->setReadOnly(true);
     utf8_layout->addWidget(this->utf8_edit);
+
+    //GBK
+    this->gbk_widget = new QWidget(this);
+    this->tabwidget->addTab(this->gbk_widget, "GBK");
+
+    auto gbk_layout = new QVBoxLayout(this);
+    gbk_layout->setMargin(1);
+    gbk_layout->setSpacing(1);
+    this->gbk_widget->setLayout(gbk_layout);
+
+    this->gbk_edit = new QTextEdit(this);
+    this->gbk_edit->setReadOnly(true);
+    gbk_layout->addWidget(this->gbk_edit);
 
     return;
 }
