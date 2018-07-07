@@ -61,12 +61,18 @@ private:
     //ASCII
     QWidget *ascii_widget = NULL;
     QTextEdit *ascii_edit = NULL;
-    //UTF8
-    QWidget *utf8_widget = NULL;
-    QTextEdit *utf8_edit = NULL;
     //GBK
     QWidget *gbk_widget = NULL;
     QTextEdit *gbk_edit = NULL;
+    //UTF8
+    QWidget *utf8_widget = NULL;
+    QTextEdit *utf8_edit = NULL;
+    //UTF16
+    QWidget *utf16_widget = NULL;
+    QTextEdit *utf16_edit = NULL;
+    //UTF32
+    QWidget *utf32_widget = NULL;
+    QTextEdit *utf32_edit = NULL;
 };
 
 //每个节点都是一个Coder的子类

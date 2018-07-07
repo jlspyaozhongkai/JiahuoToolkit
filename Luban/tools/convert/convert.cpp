@@ -84,6 +84,34 @@ DataView::DataView(QWidget *parent)
     this->utf8_edit->setReadOnly(true);
     utf8_layout->addWidget(this->utf8_edit);
 
+    //UTF-16
+    this->utf16_widget = new QWidget(this);
+    this->tabwidget->addTab(this->utf16_widget, "UTF-16");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->utf16_widget), "UTF-16");
+
+    auto utf16_layout = new QVBoxLayout(this);
+    utf16_layout->setMargin(1);
+    utf16_layout->setSpacing(1);
+    this->utf16_widget->setLayout(utf16_layout);
+
+    this->utf16_edit = new QTextEdit(this);
+    this->utf16_edit->setReadOnly(true);
+    utf16_layout->addWidget(this->utf16_edit);
+
+    //UTF-32
+    this->utf32_widget = new QWidget(this);
+    this->tabwidget->addTab(this->utf32_widget, "UTF-32");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->utf32_widget), "UTF-32");
+
+    auto utf32_layout = new QVBoxLayout(this);
+    utf32_layout->setMargin(1);
+    utf32_layout->setSpacing(1);
+    this->utf32_widget->setLayout(utf32_layout);
+
+    this->utf32_edit = new QTextEdit(this);
+    this->utf32_edit->setReadOnly(true);
+    utf32_layout->addWidget(this->utf32_edit);
+
     return;
 }
 
@@ -93,6 +121,8 @@ void DataView::setData(CodeData *data)
     this->ascii_edit->setText("");
     this->gbk_edit->setText("");
     this->utf8_edit->setText("");
+    this->utf16_edit->setText("");
+    this->utf32_edit->setText("");
 
     if (data == NULL) {
         return;
@@ -149,6 +179,14 @@ void DataView::setData(CodeData *data)
     //UTF-8
     auto utf8_decoder = QTextCodec::codecForName("UTF-8");
     this->utf8_edit->setText(utf8_decoder->toUnicode(data->m_buf));
+
+    //UTF-16
+    auto utf16_decoder = QTextCodec::codecForName("UTF-16");
+    this->utf16_edit->setText(utf16_decoder->toUnicode(data->m_buf));
+
+    //UTF-32
+    auto utf32_decoder = QTextCodec::codecForName("UTF-32");
+    this->utf32_edit->setText(utf32_decoder->toUnicode(data->m_buf));
 
     return;
 }
