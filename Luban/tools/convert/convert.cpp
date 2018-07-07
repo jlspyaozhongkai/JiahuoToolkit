@@ -34,6 +34,9 @@ DataView::DataView(QWidget *parent)
 
     this->hex_edit = new QTextEdit(this);
     this->hex_edit->setReadOnly(true);
+    this->hex_edit->setLineWrapMode(QTextEdit::NoWrap);
+    QFont adjust_font(this->hex_edit->font());
+    this->hex_edit->setFont(adjust_font);
     hex_layout->addWidget(this->hex_edit);
 
     //UTF-8
@@ -51,8 +54,6 @@ DataView::DataView(QWidget *parent)
 
     return;
 }
-
-
 
 void DataView::setData(CodeData *data)
 {
