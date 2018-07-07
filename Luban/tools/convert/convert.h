@@ -58,6 +58,9 @@ private:
     //Hex
     QWidget *hex_widget = NULL;
     QTextEdit *hex_edit = NULL;
+    //ASCII
+    QWidget *ascii_widget = NULL;
+    QTextEdit *ascii_edit = NULL;
     //UTF8
     QWidget *utf8_widget = NULL;
     QTextEdit *utf8_edit = NULL;

@@ -42,19 +42,19 @@ DataView::DataView(QWidget *parent)
     this->hex_edit->setFont(adjust_font);
     hex_layout->addWidget(this->hex_edit);
 
-    //UTF-8
-    this->utf8_widget = new QWidget(this);
-    this->tabwidget->addTab(this->utf8_widget, "UTF-8");
-    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->utf8_widget), "UTF-8");
+    //ASCII
+    this->ascii_widget = new QWidget(this);
+    this->tabwidget->addTab(this->ascii_widget, "ASCII");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->ascii_widget), "US-ASCII/Latin-1");
 
-    auto utf8_layout = new QVBoxLayout(this);
-    utf8_layout->setMargin(1);
-    utf8_layout->setSpacing(1);
-    this->utf8_widget->setLayout(utf8_layout);
+    auto ascii_layout = new QVBoxLayout(this);
+    ascii_layout->setMargin(1);
+    ascii_layout->setSpacing(1);
+    this->ascii_widget->setLayout(ascii_layout);
 
-    this->utf8_edit = new QTextEdit(this);
-    this->utf8_edit->setReadOnly(true);
-    utf8_layout->addWidget(this->utf8_edit);
+    this->ascii_edit = new QTextEdit(this);
+    this->ascii_edit->setReadOnly(true);
+    ascii_layout->addWidget(this->ascii_edit);
 
     //GBK
     this->gbk_widget = new QWidget(this);
@@ -70,14 +70,29 @@ DataView::DataView(QWidget *parent)
     this->gbk_edit->setReadOnly(true);
     gbk_layout->addWidget(this->gbk_edit);
 
+    //UTF-8
+    this->utf8_widget = new QWidget(this);
+    this->tabwidget->addTab(this->utf8_widget, "UTF-8");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->utf8_widget), "UTF-8");
+
+    auto utf8_layout = new QVBoxLayout(this);
+    utf8_layout->setMargin(1);
+    utf8_layout->setSpacing(1);
+    this->utf8_widget->setLayout(utf8_layout);
+
+    this->utf8_edit = new QTextEdit(this);
+    this->utf8_edit->setReadOnly(true);
+    utf8_layout->addWidget(this->utf8_edit);
+
     return;
 }
 
 void DataView::setData(CodeData *data)
 {
     this->hex_edit->setText("");
-    this->utf8_edit->setText("");
+    this->ascii_edit->setText("");
     this->gbk_edit->setText("");
+    this->utf8_edit->setText("");
 
     if (data == NULL) {
         return;
@@ -124,13 +139,16 @@ void DataView::setData(CodeData *data)
     }
     this->hex_edit->setText(lines);
 
-    //UTF-8
-    auto utf8_decoder = QTextCodec::codecForName("UTF-8");
-    this->utf8_edit->setText(utf8_decoder->toUnicode(data->m_buf));
+    //ASCII
+    this->ascii_edit->setText(QString::fromLatin1(data->m_buf));
 
     //GBK
     auto gbk_decoder = QTextCodec::codecForName("GB18030");
     this->gbk_edit->setText(gbk_decoder->toUnicode(data->m_buf));
+
+    //UTF-8
+    auto utf8_decoder = QTextCodec::codecForName("UTF-8");
+    this->utf8_edit->setText(utf8_decoder->toUnicode(data->m_buf));
 
     return;
 }
