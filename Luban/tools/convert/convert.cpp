@@ -71,7 +71,7 @@ void DataView::setData(CodeData *data)
     int length = data->m_buf.length();
     int iloop;
     for (iloop = 0; iloop < length; iloop++) {
-        char ch = data->m_buf.at(iloop);
+        uchar ch = data->m_buf.at(iloop);
         line_hex += QString::asprintf("%02X ", ch);
         QChar qch(ch);
         if (qch.isPrint()) {
