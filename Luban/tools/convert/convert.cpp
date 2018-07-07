@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QDir>
+#include <QTextCodec>
 #include <QDebug>
 #include "convert.h"
 
@@ -71,9 +72,11 @@ DataView::DataView(QWidget *parent)
 
 void DataView::setData(CodeData *data)
 {
+    this->hex_edit->setText("");
+    this->utf8_edit->setText("");
+    this->gbk_edit->setText("");
+
     if (data == NULL) {
-        this->hex_edit->setText("");
-        this->utf8_edit->setText("");
         return;
     }
 
@@ -119,7 +122,12 @@ void DataView::setData(CodeData *data)
     this->hex_edit->setText(lines);
 
     //UTF-8
-    this->utf8_edit->setText(QString::fromUtf8(data->m_buf));
+    auto utf8_decoder = QTextCodec::codecForName("UTF-8");
+    this->utf8_edit->setText(utf8_decoder->toUnicode(data->m_buf));
+
+    //GBK
+    auto gbk_decoder = QTextCodec::codecForName("GB18030");
+    this->gbk_edit->setText(gbk_decoder->toUnicode(data->m_buf));
 
     return;
 }
