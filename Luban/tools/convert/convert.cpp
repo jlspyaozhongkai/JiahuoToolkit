@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QDir>
+#include <QStringList>
 #include <QTextCodec>
 #include <QDebug>
 #include "convert.h"
@@ -112,10 +113,42 @@ DataView::DataView(QWidget *parent)
     this->utf32_edit->setReadOnly(true);
     utf32_layout->addWidget(this->utf32_edit);
 
+    //Others
+    this->others_widget = new QWidget(this);
+    this->tabwidget->addTab(this->others_widget, "Others");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->others_widget), "Others with options");
+
+    auto others_layout = new QVBoxLayout(this);
+    others_layout->setMargin(1);
+    others_layout->setSpacing(1);
+    this->others_widget->setLayout(others_layout);
+
+    QStringList code_list;
+    auto support_codes = QTextCodec::availableCodecs();
+    int iloop;
+    for (iloop = 0; iloop < support_codes.size(); iloop++) {
+        auto support_code = support_codes.at(iloop);
+        code_list << QString::fromLatin1(support_code);
+    }
+    code_list.sort();
+    this->others_code = new QComboBox(this);
+    this->others_code->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    this->others_code->addItems(code_list);
+    this->others_code->setCurrentText("UTF-8");
+    others_layout->addWidget(this->others_code);
+
+    this->others_edit = new QTextEdit(this);
+    this->others_edit->setReadOnly(true);
+    others_layout->addWidget(this->others_edit);
+
+    connect(this->others_code, &QComboBox::currentTextChanged, [this]{
+        this->setData(& this->m_data);
+    });
+
     return;
 }
 
-void DataView::setData(CodeData *data)
+void DataView::setData(CodeData *input)
 {
     this->hex_edit->setText("");
     this->ascii_edit->setText("");
@@ -123,19 +156,26 @@ void DataView::setData(CodeData *data)
     this->utf8_edit->setText("");
     this->utf16_edit->setText("");
     this->utf32_edit->setText("");
+    this->others_edit->setText("");
 
-    if (data == NULL) {
+    if (input == NULL) {
+        this->m_data.m_buf.clear();
+        this->m_data.m_type = CodeData::TYPE_NONE;
+
         return;
     }
+
+    this->m_data.m_buf = input->m_buf;
+    this->m_data.m_type = input->m_type;
 
     //Hex
     QString lines;      //所有行的集合
     QString line_hex;   //每行的hex部分
     QString line_str;   //后边的字符部分
-    int length = data->m_buf.length();
+    int length = this->m_data.m_buf.length();
     int iloop;
     for (iloop = 0; iloop < length; iloop++) {
-        uchar ch = data->m_buf.at(iloop);
+        uchar ch = this->m_data.m_buf.at(iloop);
         line_hex += QString::asprintf("%02X ", ch);
         QChar qch(ch);
         if (qch.isPrint()) {
@@ -170,23 +210,28 @@ void DataView::setData(CodeData *data)
     this->hex_edit->setText(lines);
 
     //ASCII
-    this->ascii_edit->setText(QString::fromLatin1(data->m_buf));
+    this->ascii_edit->setText(QString::fromLatin1(this->m_data.m_buf));
 
     //GBK
     auto gbk_decoder = QTextCodec::codecForName("GB18030");
-    this->gbk_edit->setText(gbk_decoder->toUnicode(data->m_buf));
+    this->gbk_edit->setText(gbk_decoder->toUnicode(this->m_data.m_buf));
 
     //UTF-8
     auto utf8_decoder = QTextCodec::codecForName("UTF-8");
-    this->utf8_edit->setText(utf8_decoder->toUnicode(data->m_buf));
+    this->utf8_edit->setText(utf8_decoder->toUnicode(this->m_data.m_buf));
 
     //UTF-16
     auto utf16_decoder = QTextCodec::codecForName("UTF-16");
-    this->utf16_edit->setText(utf16_decoder->toUnicode(data->m_buf));
+    this->utf16_edit->setText(utf16_decoder->toUnicode(this->m_data.m_buf));
 
     //UTF-32
     auto utf32_decoder = QTextCodec::codecForName("UTF-32");
-    this->utf32_edit->setText(utf32_decoder->toUnicode(data->m_buf));
+    this->utf32_edit->setText(utf32_decoder->toUnicode(this->m_data.m_buf));
+
+    //Others
+    auto others_cur_text = this->others_code->currentText();
+    auto others_decoder = QTextCodec::codecForName(others_cur_text.toLatin1());
+    this->others_edit->setText(others_decoder->toUnicode(this->m_data.m_buf));
 
     return;
 }

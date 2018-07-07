@@ -12,6 +12,7 @@
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <QComboBox>
 
 //数据缓冲区和数据类型描述，设计上允许拷贝（效率问题不大）
 class CodeData {
@@ -54,6 +55,8 @@ public:
     ~DataView() {}
     void setData(CodeData *data);   //If data is null, clear data view.
 private:
+    CodeData m_data;                //这里保存拷贝了
+
     QTabWidget *tabwidget = NULL;
     //Hex
     QWidget *hex_widget = NULL;
@@ -73,6 +76,10 @@ private:
     //UTF32
     QWidget *utf32_widget = NULL;
     QTextEdit *utf32_edit = NULL;
+    //Others
+    QWidget *others_widget = NULL;
+    QComboBox *others_code = NULL;
+    QTextEdit *others_edit = NULL;
 };
 
 //每个节点都是一个Coder的子类
