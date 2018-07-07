@@ -26,7 +26,8 @@ DataView::DataView(QWidget *parent)
 
     //HexView
     this->hex_widget = new QWidget(this);
-    this->tabwidget->addTab(hex_widget, "Hex");
+    this->tabwidget->addTab(this->hex_widget, "Hex");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->hex_widget), "Hex");
 
     auto hex_layout = new QVBoxLayout(this);
     hex_layout->setMargin(1);
@@ -44,6 +45,7 @@ DataView::DataView(QWidget *parent)
     //UTF-8
     this->utf8_widget = new QWidget(this);
     this->tabwidget->addTab(this->utf8_widget, "UTF-8");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->utf8_widget), "UTF-8");
 
     auto utf8_layout = new QVBoxLayout(this);
     utf8_layout->setMargin(1);
@@ -57,6 +59,7 @@ DataView::DataView(QWidget *parent)
     //GBK
     this->gbk_widget = new QWidget(this);
     this->tabwidget->addTab(this->gbk_widget, "GBK");
+    this->tabwidget->setTabToolTip(this->tabwidget->indexOf(this->gbk_widget), "GBK/GB18030");
 
     auto gbk_layout = new QVBoxLayout(this);
     gbk_layout->setMargin(1);
