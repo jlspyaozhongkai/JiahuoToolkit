@@ -438,9 +438,9 @@ CoderBox::CoderBox(QWidget *parent)
     this->addnew = new QPushButton("+", this);
     top_layout->addWidget(this->addnew);
 
-    connect(this->addnew, &QPushButton::pressed, []{
-        auto coder = WhichCoder::getCoder();
-        qDebug() << coder;
+    connect(this->addnew, &QPushButton::pressed, [this]{
+        qDebug() << "CoderBox::Add";
+        emit this->signalsAdd();
     });
 
     //方框内
@@ -463,6 +463,11 @@ CoderBox::CoderBox(QWidget *parent)
     this->delcur = new QPushButton("Del", this);
     this->delcur->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     del_coder_layout->addWidget(this->delcur);
+
+    connect(this->delcur, &QPushButton::pressed, [this]{
+        qDebug() << "CoderBox::Del";
+        emit this->signalsDel();
+    });
 
     //右边 Box
     this->coder_layout = new QHBoxLayout(this);

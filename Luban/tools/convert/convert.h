@@ -164,6 +164,9 @@ public:
     ~CoderBox() {}
 
     void setCoder(Coder *coder);
+signals:
+    void signalsAdd();
+    void signalsDel();
 private:
     QLabel *title_label = NULL;
     QPushButton *delcur = NULL;
