@@ -597,18 +597,41 @@ Coder *WhichCoder::getCoder()
 ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
-    auto top_layout = new QVBoxLayout(this);
-    top_layout->setMargin(0);
-    top_layout->setSpacing(0);
-    this->setLayout(top_layout);
+    this->m_listlayout = new QVBoxLayout(this);
+    this->m_listlayout->setMargin(0);
+    this->m_listlayout->setSpacing(0);
+    this->setLayout(this->m_listlayout);
 
-    //默认放一个Input节点。
-    auto box = new CoderBox(this);
-    top_layout->addWidget(box);
-
+    //安装首个节点
     auto coder = new CoderInput(this);
+    this->addCoder(coder);
+
+    return;
+}
+
+void ConvertInner::addCoder(Coder *coder)
+{
+    auto box = new CoderBox(this);
     box->setCoder(coder);
 
+    this->m_listlayout->addWidget(box);
+
+    //
+    connect(box, SIGNAL(signalsAdd()), this, SLOT(slotBoxAdd()));
+    connect(box, SIGNAL(signalsDel()), this, SLOT(slotBoxDel()));
+
+    return;
+}
+
+void ConvertInner::slotBoxAdd()
+{
+    qDebug() << "ConvertInner::slotBoxAdd";
+    return;
+}
+
+void ConvertInner::slotBoxDel()
+{
+    qDebug() << "ConvertInner::slotBoxDel";
     return;
 }
 

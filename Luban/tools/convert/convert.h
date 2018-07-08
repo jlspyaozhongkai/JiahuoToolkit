@@ -195,6 +195,12 @@ class ConvertInner : public QWidget
 public:
     ConvertInner(QWidget *parent = 0);
     ~ConvertInner() {}
+private slots:
+    void slotBoxAdd();
+    void slotBoxDel();
+private:
+    QVBoxLayout *m_listlayout = NULL;
+    void addCoder(Coder *coder);
 };
 
 //ConvertDialog为ConvertInner提供滚动条功能
