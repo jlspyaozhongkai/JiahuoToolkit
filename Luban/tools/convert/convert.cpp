@@ -11,6 +11,7 @@
 #include <QHeaderView>
 #include <QDir>
 #include <QStringList>
+#include <QLayoutItem>
 #include <QTextCodec>
 #include <QVariant>
 #include <QDebug>
@@ -393,6 +394,14 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     this->setName("URL Encode");
     this->setDesc("URL Encode");
 
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(1);
+    top_layout->setSpacing(1);
+    this->setLayout(top_layout);
+
+    this->data_view = new DataView(this);
+    top_layout->addWidget(this->data_view);
+
     return;
 }
 
@@ -408,6 +417,14 @@ CoderUrlDecode::CoderUrlDecode(QWidget *parent)
 {
     this->setName("URL Decode");
     this->setDesc("URL Decode");
+
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(1);
+    top_layout->setSpacing(1);
+    this->setLayout(top_layout);
+
+    this->data_view = new DataView(this);
+    top_layout->addWidget(this->data_view);
 
     return;
 }
@@ -646,6 +663,8 @@ void ConvertInner::slotBoxAdd()
     qDebug() << "Insert box at" << box_index;
 
     this->addCoder(box_index + 1, coder);
+
+    this->slotCoderChanged();
     return;
 }
 
@@ -669,6 +688,7 @@ void ConvertInner::slotBoxDel()
     this->m_boxlist->removeWidget(box);
     box->deleteLater();
 
+    this->slotCoderChanged();
     return;
 }
 
@@ -677,7 +697,20 @@ void ConvertInner::slotCoderChanged()
     qDebug() << "ConvertInner::slotCoderChanged";
     //任何一个Coder变化了都从头开始刷新
 
-
+    int count = this->m_boxlist->count();
+    int iloop;
+    for (iloop = 0; iloop < count; iloop++) {
+        auto widget = this->m_boxlist->itemAt(iloop)->widget();
+        if (widget == NULL) {
+            continue;
+        }
+        CoderBox *box = qobject_cast<CoderBox*>(widget);
+        if (box == NULL) {
+            continue;
+        }
+        Coder *coder = box->getCoder();
+        qDebug() << ">>>" << coder->name();
+    }
 
     return;
 }

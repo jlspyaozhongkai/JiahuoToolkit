@@ -140,6 +140,7 @@ public:
     CodeData flushChain(CodeData input);
     static Coder* make() {qDebug() << "CoderUrlEncode::make";return new CoderUrlEncode();}
 private:
+    DataView *data_view = NULL;
 };
 
 //Coder子类，CoderUrlDecode
@@ -153,6 +154,7 @@ public:
     CodeData flushChain(CodeData input);
     static Coder* make() {qDebug() << "CoderUrlDecode::make";return new CoderUrlDecode();}
 private:
+    DataView *data_view = NULL;
 };
 
 
@@ -165,6 +167,7 @@ public:
     ~CoderBox() {}
 
     void setCoder(Coder *coder);
+    Coder *getCoder(){return coder;}
 signals:
     void signalAdd();
     void signalDel();
