@@ -597,24 +597,27 @@ Coder *WhichCoder::getCoder()
 ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
-    this->m_listlayout = new QVBoxLayout(this);
-    this->m_listlayout->setMargin(0);
-    this->m_listlayout->setSpacing(0);
-    this->setLayout(this->m_listlayout);
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(0);
+    top_layout->setSpacing(0);
+    this->setLayout(top_layout);
+
+    this->m_boxlist = new QSplitter(Qt::Vertical, this);
+    top_layout->addWidget(this->m_boxlist);
 
     //安装首个节点
     auto coder = new CoderInput(this);
-    this->addCoder(coder);
+    this->addCoder(0, coder);
 
     return;
 }
 
-void ConvertInner::addCoder(Coder *coder)
+void ConvertInner::addCoder(int index, Coder *coder)
 {
     auto box = new CoderBox(this);
     box->setCoder(coder);
 
-    this->m_listlayout->addWidget(box);
+    this->m_boxlist->insertWidget(index, box);
 
     //
     connect(box, SIGNAL(signalsAdd()), this, SLOT(slotBoxAdd()));
@@ -626,6 +629,23 @@ void ConvertInner::addCoder(Coder *coder)
 void ConvertInner::slotBoxAdd()
 {
     qDebug() << "ConvertInner::slotBoxAdd";
+
+    auto coder = WhichCoder::getCoder();
+    if (coder == NULL) {
+        qDebug() << "Get coder failed";
+        return;
+    }
+
+    CoderBox *box = qobject_cast<CoderBox*>(sender());
+    if (box == NULL) {
+        qDebug() << "Get previous box failed";
+        return;
+    }
+
+    int box_index = this->m_boxlist->indexOf(box);  //success forever
+    qDebug() << "Insert box at" << box_index;
+
+    this->addCoder(box_index + 1, coder);
     return;
 }
 

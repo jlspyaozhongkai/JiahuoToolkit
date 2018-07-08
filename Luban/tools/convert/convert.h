@@ -13,6 +13,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QSplitter>
 #include <QDebug>
 
 //数据缓冲区和数据类型描述，设计上允许拷贝（效率问题不大）
@@ -95,8 +96,6 @@ public:
     QString desc() {return m_desc;}
     void setName(QString name) {this->m_name = name;}
     void setDesc(QString desc) {this->m_desc = desc;}
-
-    //TODO 刷新信号等，需要链式功能
 
     virtual CodeData flushChain(CodeData input) = 0;        //输入输出
 private:
@@ -199,8 +198,8 @@ private slots:
     void slotBoxAdd();
     void slotBoxDel();
 private:
-    QVBoxLayout *m_listlayout = NULL;
-    void addCoder(Coder *coder);
+    QSplitter *m_boxlist = NULL;
+    void addCoder(int index, Coder *coder);
 };
 
 //ConvertDialog为ConvertInner提供滚动条功能
