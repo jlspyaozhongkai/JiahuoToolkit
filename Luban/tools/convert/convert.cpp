@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QTreeWidget>
+#include <QHeaderView>
 #include <QDir>
 #include <QStringList>
 #include <QTextCodec>
@@ -480,15 +481,57 @@ WhichCoder::WhichCoder(QDialog *parent)
 
     //
     auto coder_tree = new QTreeWidget(this);
+    coder_tree->header()->setVisible(false);
     top_layout->addWidget(coder_tree);
 
+    //设置树节点
+    auto url_node = new QTreeWidgetItem();
+    url_node->setText(0, "URL Encode/Decode");
+    coder_tree->addTopLevelItem(url_node);
+
+    auto url_encode = new QTreeWidgetItem();
+    url_encode->setText(0, "URL Encode");
+    url_node->addChild(url_encode);
+
+    auto url_decode = new QTreeWidgetItem();
+    url_decode->setText(0, "URL Decode");
+    url_node->addChild(url_decode);
+
     //
+    auto btn_layout = new QHBoxLayout(this);
+    top_layout->addLayout(btn_layout);
+
+    btn_layout->addStretch();   //加弹簧
+
+    auto ok_btn = new QPushButton("确定", this);
+    ok_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    btn_layout->addWidget(ok_btn);
+
+    auto cancel_btn = new QPushButton("取消", this);
+    cancel_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    btn_layout->addWidget(cancel_btn);
+
+    connect(ok_btn, &QPushButton::pressed, [this]{
+
+    });
+
+    connect(cancel_btn, &QPushButton::pressed, [this]{
+        this->close();
+    });
 
     return;
 }
 
 Coder *WhichCoder::getCoder()
 {
+    qDebug() << "WhichCoder::getCoder";
+
+    auto whichcoder = new WhichCoder();
+    whichcoder->setModal(true);
+    whichcoder->exec();     //会等待WhichCoder关闭
+
+    qDebug() << "WhichCoder::getCoder";
+
     return NULL;
 }
 

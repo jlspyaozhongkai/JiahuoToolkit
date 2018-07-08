@@ -177,6 +177,8 @@ public:
     ~WhichCoder() {}
 
     static Coder *getCoder();
+private:
+    Coder *m_coder = NULL;
 };
 
 //ConvertInner为主要实现(用QWidget不好使，需要继承实现)
