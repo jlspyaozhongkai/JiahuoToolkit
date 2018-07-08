@@ -390,6 +390,9 @@ void CoderInput::flushFile()
 CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     : Coder(parent)
 {
+    this->setName("URL Encode");
+    this->setDesc("URL Encode");
+
     return;
 }
 
@@ -403,6 +406,9 @@ CodeData CoderUrlEncode::flushChain(CodeData input)
 CoderUrlDecode::CoderUrlDecode(QWidget *parent)
     : Coder(parent)
 {
+    this->setName("URL Decode");
+    this->setDesc("URL Decode");
+
     return;
 }
 
@@ -432,7 +438,7 @@ CoderBox::CoderBox(QWidget *parent)
     this->addnew = new QPushButton("+", this);
     top_layout->addWidget(this->addnew);
 
-    connect(this->addnew, &QPushButton::pressed, [this]{
+    connect(this->addnew, &QPushButton::pressed, []{
         auto coder = WhichCoder::getCoder();
         qDebug() << coder;
     });
@@ -499,17 +505,17 @@ WhichCoder::WhichCoder(QDialog *parent)
     //设置树节点
     auto url_node = new QTreeWidgetItem();
     url_node->setText(0, "URL Encode/Decode");
-    url_node->setData(0, 0, QVariant::fromValue((void *)NULL));
-
+    url_node->setData(1, 0, QVariant::fromValue((void *)NULL));
     coder_tree->addTopLevelItem(url_node);
+
     auto url_encode = new QTreeWidgetItem();
     url_encode->setText(0, "URL Encode");
-    url_encode->setData(0, 0, QVariant::fromValue((void *)CoderUrlEncode::make));
+    url_encode->setData(1, 0, QVariant::fromValue((void *)CoderUrlEncode::make));
     url_node->addChild(url_encode);
 
     auto url_decode = new QTreeWidgetItem();
     url_decode->setText(0, "URL Decode");
-    url_encode->setData(0, 0, QVariant::fromValue((void *)CoderUrlDecode::make));
+    url_decode->setData(1, 0, QVariant::fromValue((void *)CoderUrlDecode::make));
     url_node->addChild(url_decode);
 
     //
@@ -526,8 +532,33 @@ WhichCoder::WhichCoder(QDialog *parent)
     cancel_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     btn_layout->addWidget(cancel_btn);
 
-    connect(ok_btn, &QPushButton::pressed, [this]{
+    //
+    ok_btn->setEnabled(false);  //默认 disable
+    connect(coder_tree, &QTreeWidget::currentItemChanged, [ok_btn](QTreeWidgetItem *current, QTreeWidgetItem *previous){
+        Q_UNUSED(previous);
+        if (current == NULL) {
+            return;
+        }
+        void *data = current->data(1, 0).value<void *>();
+        if (data == NULL) {
+            ok_btn->setEnabled(false);
+        } else {
+            ok_btn->setEnabled(true);
+        }
+    });
 
+    connect(ok_btn, &QPushButton::pressed, [this, coder_tree, ok_btn]{
+        auto current = coder_tree->currentItem();
+        if (current == NULL) {
+            return;
+        }
+        void *data = current->data(1, 0).value<void *>();
+        if (data == NULL) {
+            ok_btn->setEnabled(false);
+            return;
+        }
+        this->m_coder = ((Coder *(*)())data)();
+        this->close();
     });
 
     connect(cancel_btn, &QPushButton::pressed, [this]{
@@ -539,15 +570,22 @@ WhichCoder::WhichCoder(QDialog *parent)
 
 Coder *WhichCoder::getCoder()
 {
-    qDebug() << "WhichCoder::getCoder";
+    qDebug() << "WhichCoder::getCoder start";
+    Coder *ret_val = NULL;
 
     auto whichcoder = new WhichCoder();
     whichcoder->setModal(true);
     whichcoder->exec();     //会等待WhichCoder关闭
+    ret_val = whichcoder->m_coder;
+    delete whichcoder;
 
-    qDebug() << "WhichCoder::getCoder";
+    if (ret_val == NULL) {
+        qDebug() << "WhichCoder::getCoder failed";
+    } else {
+        qDebug() << "WhichCoder::getCoder finish: " << ret_val->name() << " " << ret_val->desc();
+    }
 
-    return NULL;
+    return ret_val;
 }
 
 //内部为主要实现，外部实现滚动条功能

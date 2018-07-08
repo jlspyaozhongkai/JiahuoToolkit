@@ -13,6 +13,7 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QDebug>
 
 //数据缓冲区和数据类型描述，设计上允许拷贝（效率问题不大）
 class CodeData {
@@ -136,7 +137,7 @@ public:
     ~CoderUrlEncode() {}
 
     CodeData flushChain(CodeData input);
-    static Coder* make() {return new CoderUrlEncode();}
+    static Coder* make() {qDebug() << "CoderUrlEncode::make";return new CoderUrlEncode();}
 private:
 };
 
@@ -149,7 +150,7 @@ public:
     ~CoderUrlDecode() {}
 
     CodeData flushChain(CodeData input);
-    static Coder* make() {return new CoderUrlDecode();}
+    static Coder* make() {qDebug() << "CoderUrlDecode::make";return new CoderUrlDecode();}
 private:
 };
 
