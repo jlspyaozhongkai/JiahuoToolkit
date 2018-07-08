@@ -198,7 +198,7 @@ private slots:
     void slotBoxAdd();
     void slotBoxDel();
 private:
-    QSplitter *m_boxlist = NULL;
+    QVBoxLayout *m_boxlist = NULL;
     void addCoder(int index, Coder *coder);
 };
 

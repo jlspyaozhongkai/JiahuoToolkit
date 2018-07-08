@@ -597,13 +597,10 @@ Coder *WhichCoder::getCoder()
 ConvertInner::ConvertInner(QWidget *parent)
     : QWidget(parent)
 {
-    auto top_layout = new QVBoxLayout(this);
-    top_layout->setMargin(0);
-    top_layout->setSpacing(0);
-    this->setLayout(top_layout);
-
-    this->m_boxlist = new QSplitter(Qt::Vertical, this);
-    top_layout->addWidget(this->m_boxlist);
+    this->m_boxlist = new QVBoxLayout(this);
+    this->m_boxlist->setMargin(0);
+    this->m_boxlist->setSpacing(0);
+    this->setLayout(this->m_boxlist);
 
     //安装首个节点
     auto coder = new CoderInput(this);
@@ -652,6 +649,23 @@ void ConvertInner::slotBoxAdd()
 void ConvertInner::slotBoxDel()
 {
     qDebug() << "ConvertInner::slotBoxDel";
+
+    CoderBox *box = qobject_cast<CoderBox*>(sender());
+    if (box == NULL) {
+        qDebug() << "Get current box failed";
+        return;
+    }
+
+    int box_index = this->m_boxlist->indexOf(box);  //success forever
+    qDebug() << "Remove box at" << box_index;
+
+    if (box_index == 0) {
+        return;
+    }
+
+    this->m_boxlist->removeWidget(box);
+    box->deleteLater();
+
     return;
 }
 
