@@ -357,6 +357,8 @@ void CoderInput::flushText()
     this->m_data.m_type = CodeData::TYPE_TEXT_UTF8;
 
     this->data_view->setData(&this->m_data);
+
+    emit this->signalChanged();
     return;
 }
 
@@ -385,6 +387,8 @@ void CoderInput::flushFile()
     }
 
     this->data_view->setData(&this->m_data);
+
+    emit this->signalChanged();
     return;
 }
 
