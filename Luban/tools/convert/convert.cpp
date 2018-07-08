@@ -337,7 +337,7 @@ CoderInput::CoderInput(QWidget *parent)
     return;
 }
 
-CodeData CoderInput::io(CodeData input)
+CodeData CoderInput::flushChain(CodeData input)
 {
     Q_UNUSED(input);
     return this->m_data;
@@ -382,6 +382,21 @@ void CoderInput::flushFile()
 
     this->data_view->setData(&this->m_data);
     return;
+}
+
+CodeData CoderUrlEncode::flushChain(CodeData input)
+{
+    Q_UNUSED(input);
+    CodeData xxx;
+    return xxx;
+}
+
+
+CodeData CoderUrlDecode::flushChain(CodeData input)
+{
+    Q_UNUSED(input);
+    CodeData xxx;
+    return xxx;
 }
 
 //为Coder提供大小调整功能

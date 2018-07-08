@@ -95,7 +95,9 @@ public:
     void setName(QString name) {this->m_name = name;}
     void setDesc(QString desc) {this->m_desc = desc;}
 
-    virtual CodeData io(CodeData input) = 0;        //输入输出
+    //TODO 刷新信号等，需要链式功能
+
+    virtual CodeData flushChain(CodeData input) = 0;        //输入输出
 private:
     QString m_name = "";
     QString m_desc = "";
@@ -109,7 +111,7 @@ public:
     CoderInput(QWidget *parent = 0);
     ~CoderInput() {}
 
-    CodeData io(CodeData input);
+    CodeData flushChain(CodeData input);
 private:
     CodeData m_data;
 
@@ -123,6 +125,31 @@ private:
     void flushText();
     void flushFile();
 };
+
+//Coder子类，CoderUrlEncode
+class CoderUrlEncode : public Coder
+{
+    Q_OBJECT
+public:
+    CoderUrlEncode(QWidget *parent = 0);
+    ~CoderUrlEncode() {}
+
+    CodeData flushChain(CodeData input);
+private:
+};
+
+//Coder子类，CoderUrlDecode
+class CoderUrlDecode : public Coder
+{
+    Q_OBJECT
+public:
+    CoderUrlDecode(QWidget *parent = 0);
+    ~CoderUrlDecode() {}
+
+    CodeData flushChain(CodeData input);
+private:
+};
+
 
 //为Coder及其子类提供下边缘调整大小高矮功能
 class CoderBox :public QWidget
