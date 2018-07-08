@@ -88,7 +88,7 @@ class Coder :public QWidget
     Q_OBJECT
 public:
     Coder(QWidget *parent = 0);
-    ~Coder() {}
+    virtual ~Coder() {}
 
     QString name() {return m_name;}
     QString desc() {return m_desc;}
@@ -112,6 +112,7 @@ public:
     ~CoderInput() {}
 
     CodeData flushChain(CodeData input);
+    static Coder* make() {return new CoderInput();}
 private:
     CodeData m_data;
 
@@ -135,6 +136,7 @@ public:
     ~CoderUrlEncode() {}
 
     CodeData flushChain(CodeData input);
+    static Coder* make() {return new CoderUrlEncode();}
 private:
 };
 
@@ -147,6 +149,7 @@ public:
     ~CoderUrlDecode() {}
 
     CodeData flushChain(CodeData input);
+    static Coder* make() {return new CoderUrlDecode();}
 private:
 };
 

@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QTextCodec>
+#include <QVariant>
 #include <QDebug>
 #include "convert.h"
 
@@ -341,7 +342,7 @@ CoderInput::CoderInput(QWidget *parent)
 
 CodeData CoderInput::flushChain(CodeData input)
 {
-    Q_UNUSED(input);
+    Q_UNUSED(input);    //不处理输入
     return this->m_data;
 }
 
@@ -386,6 +387,12 @@ void CoderInput::flushFile()
     return;
 }
 
+CoderUrlEncode::CoderUrlEncode(QWidget *parent)
+    : Coder(parent)
+{
+    return;
+}
+
 CodeData CoderUrlEncode::flushChain(CodeData input)
 {
     Q_UNUSED(input);
@@ -393,6 +400,11 @@ CodeData CoderUrlEncode::flushChain(CodeData input)
     return xxx;
 }
 
+CoderUrlDecode::CoderUrlDecode(QWidget *parent)
+    : Coder(parent)
+{
+    return;
+}
 
 CodeData CoderUrlDecode::flushChain(CodeData input)
 {
@@ -487,14 +499,17 @@ WhichCoder::WhichCoder(QDialog *parent)
     //设置树节点
     auto url_node = new QTreeWidgetItem();
     url_node->setText(0, "URL Encode/Decode");
-    coder_tree->addTopLevelItem(url_node);
+    url_node->setData(0, 0, QVariant::fromValue((void *)NULL));
 
+    coder_tree->addTopLevelItem(url_node);
     auto url_encode = new QTreeWidgetItem();
     url_encode->setText(0, "URL Encode");
+    url_encode->setData(0, 0, QVariant::fromValue((void *)CoderUrlEncode::make));
     url_node->addChild(url_encode);
 
     auto url_decode = new QTreeWidgetItem();
     url_decode->setText(0, "URL Decode");
+    url_encode->setData(0, 0, QVariant::fromValue((void *)CoderUrlDecode::make));
     url_node->addChild(url_decode);
 
     //
