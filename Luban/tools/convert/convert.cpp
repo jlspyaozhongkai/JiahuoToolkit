@@ -440,7 +440,7 @@ CoderBox::CoderBox(QWidget *parent)
 
     connect(this->addnew, &QPushButton::pressed, [this]{
         qDebug() << "CoderBox::Add";
-        emit this->signalsAdd();
+        emit this->signalAdd();
     });
 
     //方框内
@@ -466,7 +466,7 @@ CoderBox::CoderBox(QWidget *parent)
 
     connect(this->delcur, &QPushButton::pressed, [this]{
         qDebug() << "CoderBox::Del";
-        emit this->signalsDel();
+        emit this->signalDel();
     });
 
     //右边 Box
@@ -617,8 +617,11 @@ void ConvertInner::addCoder(int index, Coder *coder)
     this->m_boxlist->insertWidget(index, box);
 
     //
-    connect(box, SIGNAL(signalsAdd()), this, SLOT(slotBoxAdd()));
-    connect(box, SIGNAL(signalsDel()), this, SLOT(slotBoxDel()));
+    connect(box, SIGNAL(signalAdd()), this, SLOT(slotBoxAdd()));
+    connect(box, SIGNAL(signalDel()), this, SLOT(slotBoxDel()));
+
+    //
+    connect(coder, SIGNAL(signalChanged()), this, SLOT(slotCoderChanged()));
 
     return;
 }
@@ -665,6 +668,16 @@ void ConvertInner::slotBoxDel()
 
     this->m_boxlist->removeWidget(box);
     box->deleteLater();
+
+    return;
+}
+
+void ConvertInner::slotCoderChanged()
+{
+    qDebug() << "ConvertInner::slotCoderChanged";
+    //任何一个Coder变化了都从头开始刷新
+
+
 
     return;
 }

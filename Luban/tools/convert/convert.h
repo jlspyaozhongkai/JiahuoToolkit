@@ -98,6 +98,8 @@ public:
     void setDesc(QString desc) {this->m_desc = desc;}
 
     virtual CodeData flushChain(CodeData input) = 0;        //输入输出
+signals:
+    void signalChanged();
 private:
     QString m_name = "";
     QString m_desc = "";
@@ -164,8 +166,8 @@ public:
 
     void setCoder(Coder *coder);
 signals:
-    void signalsAdd();
-    void signalsDel();
+    void signalAdd();
+    void signalDel();
 private:
     QLabel *title_label = NULL;
     QPushButton *delcur = NULL;
@@ -197,6 +199,7 @@ public:
 private slots:
     void slotBoxAdd();
     void slotBoxDel();
+    void slotCoderChanged();
 private:
     QVBoxLayout *m_boxlist = NULL;
     void addCoder(int index, Coder *coder);
