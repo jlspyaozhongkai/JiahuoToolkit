@@ -168,6 +168,17 @@ private:
     QPushButton *addnew = NULL;
 };
 
+//选择Coder的Dialog
+class WhichCoder :public QDialog
+{
+    Q_OBJECT
+public:
+    WhichCoder(QDialog *parent = 0);
+    ~WhichCoder() {}
+
+    static Coder *getCoder();
+};
+
 //ConvertInner为主要实现(用QWidget不好使，需要继承实现)
 class ConvertInner : public QWidget
 {

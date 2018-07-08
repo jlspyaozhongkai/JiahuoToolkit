@@ -7,6 +7,7 @@
 #include <QTabWidget>
 #include <QPushButton>
 #include <QFileDialog>
+#include <QTreeWidget>
 #include <QDir>
 #include <QStringList>
 #include <QTextCodec>
@@ -418,6 +419,11 @@ CoderBox::CoderBox(QWidget *parent)
     this->addnew = new QPushButton("+", this);
     top_layout->addWidget(this->addnew);
 
+    connect(this->addnew, &QPushButton::pressed, [this]{
+        auto coder = WhichCoder::getCoder();
+        qDebug() << coder;
+    });
+
     //方框内
     auto content_layout = new QVBoxLayout(this);
     content_layout->setMargin(0);
@@ -461,6 +467,29 @@ void CoderBox::setCoder(Coder *coder)
     this->title_label->setToolTip(coder->desc());
 
     return;
+}
+
+WhichCoder::WhichCoder(QDialog *parent)
+    : QDialog(parent)
+{
+    auto top_layout = new QVBoxLayout(this);
+    this->setLayout(top_layout);
+
+    //
+    top_layout->addWidget(new QLabel("请选择转换器", this));
+
+    //
+    auto coder_tree = new QTreeWidget(this);
+    top_layout->addWidget(coder_tree);
+
+    //
+
+    return;
+}
+
+Coder *WhichCoder::getCoder()
+{
+    return NULL;
 }
 
 //内部为主要实现，外部实现滚动条功能
