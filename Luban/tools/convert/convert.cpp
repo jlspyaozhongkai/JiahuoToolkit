@@ -393,6 +393,56 @@ void CoderInput::flushFile()
     return;
 }
 
+CoderBase64Encode::CoderBase64Encode(QWidget *parent)
+    : Coder(parent)
+{
+    this->setName("Base64 Encode");
+    this->setDesc("Base64 Encode");
+
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(1);
+    top_layout->setSpacing(1);
+    this->setLayout(top_layout);
+
+    this->data_view = new DataView(this);
+    top_layout->addWidget(this->data_view);
+
+    return;
+}
+
+CodeData CoderBase64Encode::flushChain(CodeData input)
+{
+    Q_UNUSED(input);
+    CodeData xxx;
+    return xxx;
+}
+
+
+CoderBase64Decode::CoderBase64Decode(QWidget *parent)
+    : Coder(parent)
+{
+    this->setName("Base64 Decode");
+    this->setDesc("Base64 Decode");
+
+    auto top_layout = new QVBoxLayout(this);
+    top_layout->setMargin(1);
+    top_layout->setSpacing(1);
+    this->setLayout(top_layout);
+
+    this->data_view = new DataView(this);
+    top_layout->addWidget(this->data_view);
+
+    return;
+}
+
+CodeData CoderBase64Decode::flushChain(CodeData input)
+{
+    Q_UNUSED(input);
+    CodeData xxx;
+    return xxx;
+}
+
+
 CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     : Coder(parent)
 {
@@ -436,9 +486,11 @@ CoderUrlDecode::CoderUrlDecode(QWidget *parent)
 
 CodeData CoderUrlDecode::flushChain(CodeData input)
 {
-    Q_UNUSED(input);
-    CodeData xxx;
-    return xxx;
+    CodeData ret_val;
+
+    //
+
+    return ret_val;
 }
 
 //为Coder提供大小调整功能
@@ -530,6 +582,23 @@ WhichCoder::WhichCoder(QDialog *parent)
     top_layout->addWidget(coder_tree);
 
     //设置树节点
+    //Base64
+    auto base64_node = new QTreeWidgetItem();
+    base64_node->setText(0, "Base64 Encode/Decode");
+    base64_node->setData(1, 0, QVariant::fromValue((void *)NULL));
+    coder_tree->addTopLevelItem(base64_node);
+
+    auto base64_encode = new QTreeWidgetItem();
+    base64_encode->setText(0, "Base64 Encode");
+    base64_encode->setData(1, 0, QVariant::fromValue((void *)CoderBase64Encode::make));
+    base64_node->addChild(base64_encode);
+
+    auto base64_decode = new QTreeWidgetItem();
+    base64_decode->setText(0, "Base64 Decode");
+    base64_decode->setData(1, 0, QVariant::fromValue((void *)CoderBase64Decode::make));
+    base64_node->addChild(base64_decode);
+
+    //URL
     auto url_node = new QTreeWidgetItem();
     url_node->setText(0, "URL Encode/Decode");
     url_node->setData(1, 0, QVariant::fromValue((void *)NULL));
