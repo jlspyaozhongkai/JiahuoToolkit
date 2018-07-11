@@ -343,7 +343,8 @@ CoderInput::CoderInput(QWidget *parent)
 
 CodeData CoderInput::flushChain(CodeData input)
 {
-    Q_UNUSED(input);    //不处理输入
+    //CoderInput节点特殊，节点将输入的数据缓存，然后不处理输入，直接从数据中输出
+    Q_UNUSED(input);
     return this->m_data;
 }
 
@@ -701,6 +702,8 @@ void ConvertInner::slotCoderChanged()
     qDebug() << "ConvertInner::slotCoderChanged";
     //任何一个Coder变化了都从头开始刷新
 
+    CodeData data;
+
     int count = this->m_boxlist->count();
     int iloop;
     for (iloop = 0; iloop < count; iloop++) {
@@ -713,7 +716,8 @@ void ConvertInner::slotCoderChanged()
             continue;
         }
         Coder *coder = box->getCoder();
-        qDebug() << ">>>" << coder->name();
+        qDebug() << "Flush coder:" << coder->name();
+        data = coder->flushChain(data);
     }
 
     return;

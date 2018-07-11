@@ -37,6 +37,9 @@ public:
         return;
     }
     CodeData(const CodeData& from) {
+        if (&from == this) {
+            return;
+        }
         this->m_buf.clear();
         this->m_buf.append(from.m_buf);
         return;
