@@ -100,7 +100,7 @@ public:
     void setName(QString name) {this->m_name = name;}
     void setDesc(QString desc) {this->m_desc = desc;}
 
-    virtual CodeData flushChain(CodeData input) = 0;        //输入输出
+    virtual CodeData flushChain(CodeData &input) = 0;        //输入输出
 signals:
     void signalChanged();
 private:
@@ -116,7 +116,7 @@ public:
     CoderInput(QWidget *parent = 0);
     ~CoderInput() {}
 
-    CodeData flushChain(CodeData input);
+    CodeData flushChain(CodeData &input);
     static Coder* make() {return new CoderInput();}
 private:
     CodeData m_data;
@@ -140,7 +140,7 @@ public:
     CoderBase64Encode(QWidget *parent = 0);
     ~CoderBase64Encode() {}
 
-    CodeData flushChain(CodeData input);
+    CodeData flushChain(CodeData &input);
     static Coder* make() {qDebug() << "CoderBase64Encode::make";return new CoderBase64Encode();}
 private:
     DataView *data_view = NULL;
@@ -154,7 +154,7 @@ public:
     CoderBase64Decode(QWidget *parent = 0);
     ~CoderBase64Decode() {}
 
-    CodeData flushChain(CodeData input);
+    CodeData flushChain(CodeData &input);
     static Coder* make() {qDebug() << "CoderBase64Decode::make";return new CoderBase64Decode();}
 private:
     DataView *data_view = NULL;
@@ -168,7 +168,7 @@ public:
     CoderUrlEncode(QWidget *parent = 0);
     ~CoderUrlEncode() {}
 
-    CodeData flushChain(CodeData input);
+    CodeData flushChain(CodeData &input);
     static Coder* make() {qDebug() << "CoderUrlEncode::make";return new CoderUrlEncode();}
 private:
     DataView *data_view = NULL;
@@ -182,7 +182,7 @@ public:
     CoderUrlDecode(QWidget *parent = 0);
     ~CoderUrlDecode() {}
 
-    CodeData flushChain(CodeData input);
+    CodeData flushChain(CodeData &input);
     static Coder* make() {qDebug() << "CoderUrlDecode::make";return new CoderUrlDecode();}
 private:
     DataView *data_view = NULL;

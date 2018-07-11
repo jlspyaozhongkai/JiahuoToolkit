@@ -341,7 +341,7 @@ CoderInput::CoderInput(QWidget *parent)
     return;
 }
 
-CodeData CoderInput::flushChain(CodeData input)
+CodeData CoderInput::flushChain(CodeData &input)
 {
     //CoderInput节点特殊，节点将输入的数据缓存，然后不处理输入，直接从数据中输出
     Q_UNUSED(input);
@@ -410,11 +410,13 @@ CoderBase64Encode::CoderBase64Encode(QWidget *parent)
     return;
 }
 
-CodeData CoderBase64Encode::flushChain(CodeData input)
+CodeData CoderBase64Encode::flushChain(CodeData &input)
 {
-    Q_UNUSED(input);
-    CodeData xxx;
-    return xxx;
+    CodeData ret_val;
+    ret_val.m_type = CodeData::TYPE_BYTES;
+    ret_val.m_buf = input.m_buf.toBase64();
+    this->data_view->setData(&ret_val);
+    return ret_val;
 }
 
 
@@ -435,13 +437,14 @@ CoderBase64Decode::CoderBase64Decode(QWidget *parent)
     return;
 }
 
-CodeData CoderBase64Decode::flushChain(CodeData input)
+CodeData CoderBase64Decode::flushChain(CodeData &input)
 {
-    Q_UNUSED(input);
-    CodeData xxx;
-    return xxx;
+    CodeData ret_val;
+    ret_val.m_type = CodeData::TYPE_BYTES;
+    ret_val.m_buf = QByteArray::fromBase64(input.m_buf);
+    this->data_view->setData(&ret_val);
+    return ret_val;
 }
-
 
 CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     : Coder(parent)
@@ -460,7 +463,7 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     return;
 }
 
-CodeData CoderUrlEncode::flushChain(CodeData input)
+CodeData CoderUrlEncode::flushChain(CodeData &input)
 {
     Q_UNUSED(input);
     CodeData xxx;
@@ -484,7 +487,7 @@ CoderUrlDecode::CoderUrlDecode(QWidget *parent)
     return;
 }
 
-CodeData CoderUrlDecode::flushChain(CodeData input)
+CodeData CoderUrlDecode::flushChain(CodeData &input)
 {
     CodeData ret_val;
 
