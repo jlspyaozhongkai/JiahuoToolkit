@@ -16,6 +16,9 @@
 #include <QVariant>
 #include <QDebug>
 #include "convert.h"
+#include "coder_input.h"
+#include "coder_url.h"
+#include "coder_base64.h"
 
 DataView::DataView(QWidget *parent)
     : QWidget(parent)

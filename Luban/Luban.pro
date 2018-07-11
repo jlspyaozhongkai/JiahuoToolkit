@@ -28,10 +28,18 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     tools/clipboard/clipboard.cpp \
-    tools/convert/convert.cpp
+    tools/convert/convert.cpp \
+    tools/convert/coder_input.cpp \
+    tools/convert/coder_url.cpp \
+    tools/convert/coder_base64.cpp
+
 
 HEADERS += \
     tools/ascii/ascii.h \
     mainwindow.h \
     tools/clipboard/clipboard.h \
-    tools/convert/convert.h
+    tools/convert/convert.h \
+    tools/convert/coder_input.h \
+    tools/convert/coder_url.h \
+    tools/convert/coder_base64.h
+
