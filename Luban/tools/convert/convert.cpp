@@ -573,6 +573,16 @@ ConvertDialog::ConvertDialog(QWidget *parent)
     auto top_widget = new ConvertInner(this);
     top_scroll->setWidget(top_widget);
 
+    //
+    connect(top_widget, &ConvertInner::signalResize, [this, top_widget]{
+        auto iner_high = top_widget->size().height();
+        auto outer_high = this->size().height();
+        if (outer_high < iner_high) {   //里大外小，扩充
+            int high = iner_high > 1000 ? 1000 : iner_high;
+            this->resize(this->size().width(), high);
+        }
+    });
+
     return;
 }
 

@@ -149,6 +149,8 @@ class ConvertInner : public QWidget
 public:
     ConvertInner(QWidget *parent = 0);
     ~ConvertInner() {}
+signals:
+    void signalResize();
 private slots:
     void slotBoxAdd();
     void slotBoxDel();
@@ -156,6 +158,12 @@ private slots:
 private:
     QVBoxLayout *m_boxlist = NULL;
     void addCoder(int index, Coder *coder);
+
+    void resizeEvent(QResizeEvent *event) {
+        QWidget::resizeEvent(event);
+        qDebug() << "ConvertInner resize";
+        emit this->signalResize();
+    }
 };
 
 //ConvertDialog为ConvertInner提供滚动条功能
