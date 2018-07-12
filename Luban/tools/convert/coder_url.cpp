@@ -21,7 +21,8 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     select_layout->addWidget(this->encode_all);
 
     this->encode_rfc3986 = new QRadioButton("RFC3986编码", this);
-    this->encode_rfc3986->setToolTip("RFC3986中规定 a-z A-Z 0-9 和四个字符-_.~ 以外的其他字符都需要编码，通过选项控制以下分隔符是否编码 !*'();:@&=+$,/?#[] ");
+    this->encode_rfc3986->setToolTip("RFC3986中规定 a-z A-Z 0-9 和四个字符-_.~ 以外的其他字符都需要编码，"
+                                     "通过选项控制以下分隔符是否编码 !*'();:@&=+$,/?#[] ");
     select_layout->addWidget(this->encode_rfc3986);
 
     this->encode_noprint = new QRadioButton("对不可打印字符编码", this);
@@ -52,12 +53,25 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     top_layout->addWidget(this->data_view);
 
     //
+    connect(this->encode_all, &QRadioButton::toggled, [this]{
+        emit this->signalChanged();
+    });
     connect(this->encode_rfc3986, &QRadioButton::toggled, [this]{
         if (this->encode_rfc3986->isChecked()) {
             this->encode_separator->setEnabled(true);
         } else {
             this->encode_separator->setEnabled(false);
         }
+        emit this->signalChanged();
+    });
+    connect(this->encode_noprint, &QRadioButton::toggled, [this]{
+        emit this->signalChanged();
+    });
+    connect(this->encode_separator, &QCheckBox::stateChanged, [this]{
+        emit this->signalChanged();
+    });
+    connect(this->space_to_plus, &QCheckBox::stateChanged, [this]{
+        emit this->signalChanged();
     });
 
     return;
@@ -65,9 +79,63 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
 
 CodeData CoderUrlEncode::flushChain(CodeData &input)
 {
-    Q_UNUSED(input);
-    CodeData xxx;
-    return xxx;
+    CodeData ret_val;
+    ret_val.m_type = CodeData::TYPE_BYTES;
+
+    bool encode_all = this->encode_all->isChecked();
+    bool encode_rfc3986 = this->encode_rfc3986->isChecked();
+    bool encode_noprint = this->encode_noprint->isChecked();
+
+    bool encode_rfc3986_separator = this->encode_separator->isChecked();
+    bool space_to_plus = this->space_to_plus->isChecked();
+
+    //扫描输入
+    int count = input.m_buf.size();
+    int iloop;
+    for (iloop = 0; iloop < count; iloop++) {
+        uchar ch = input.m_buf.at(iloop);
+        if (ch == ' ') {
+            if (space_to_plus) {
+                ret_val.m_buf.append('+');
+            } else {
+                ret_val.m_buf.append("%20");
+            }
+            continue;
+        }
+        if (encode_all) {
+            ret_val.m_buf.append("%");
+            ret_val.m_buf.append(QString::asprintf("%02X", ch));
+        } else if (encode_rfc3986) {
+            if (ch >= 'a' && ch <= 'z') {
+                ret_val.m_buf.append(ch);
+            } else if (ch >= 'A' && ch <= 'Z') {
+                ret_val.m_buf.append(ch);
+            } else if (ch >= '0' && ch <= '9') {
+                ret_val.m_buf.append(ch);
+            } else if (ch == '-' || ch == '_' || ch == '.' || ch == '~') {
+                ret_val.m_buf.append(ch);
+            } else if ((ch == '!' || ch == '*' || ch == '\'' || ch == '(' || ch == ')'
+                        || ch == ';' || ch == ':' || ch == '@' || ch == '&' || ch == '='
+                        || ch == '+' || ch == '$' || ch == ',' || ch == '/' || ch == '?'
+                        || ch == '#' || ch == '[' || ch == ']') and !encode_rfc3986_separator) {
+                ret_val.m_buf.append(ch);
+            } else {
+                ret_val.m_buf.append("%");
+                ret_val.m_buf.append(QString::asprintf("%02X", ch));
+            }
+        } else if (encode_noprint) {
+            QChar qch(ch);
+            if (ch <= 127 && qch.isPrint()) {
+                ret_val.m_buf.append(ch);
+            } else {
+                ret_val.m_buf.append("%");
+                ret_val.m_buf.append(QString::asprintf("%02X", ch));
+            }
+        }
+    }
+
+    this->data_view->setData(&ret_val);
+    return ret_val;
 }
 
 CoderUrlDecode::CoderUrlDecode(QWidget *parent)
