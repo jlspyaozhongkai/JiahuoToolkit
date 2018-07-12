@@ -2,6 +2,8 @@
 #ifndef TOOL_CONVERT_CODER_URL_H
 #define TOOL_CONVERT_CODER_URL_H
 
+#include <QCheckBox>
+
 #include "convert.h"
 
 //Coder子类，CoderUrlEncode
@@ -30,6 +32,8 @@ public:
     static Coder* make() {qDebug() << "CoderUrlDecode::make";return new CoderUrlDecode();}
 private:
     DataView *data_view = NULL;
+
+    QCheckBox *plus_to_space = NULL;
 };
 
 #endif //TOOL_CONVERT_CODER_URL_H
