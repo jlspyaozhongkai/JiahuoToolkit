@@ -3,6 +3,7 @@
 #define TOOL_CONVERT_CODER_URL_H
 
 #include <QCheckBox>
+#include <QRadioButton>
 
 #include "convert.h"
 
@@ -18,6 +19,13 @@ public:
     static Coder* make() {qDebug() << "CoderUrlEncode::make";return new CoderUrlEncode();}
 private:
     DataView *data_view = NULL;
+
+    QRadioButton *encode_all = NULL;
+    QRadioButton *encode_rfc3986 = NULL;
+    QRadioButton *encode_noprint = NULL;
+
+    QCheckBox *encode_separator = NULL;  //avaliable on rfc3986
+    QCheckBox *space_to_plus = NULL;
 };
 
 //Coder子类，CoderUrlDecode

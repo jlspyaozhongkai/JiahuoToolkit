@@ -14,13 +14,51 @@ CoderUrlEncode::CoderUrlEncode(QWidget *parent)
     top_layout->setSpacing(1);
     this->setLayout(top_layout);
 
-    //对所有字符编码      最重
-    //对不可打印字符编码    最轻
+    auto select_layout = new QHBoxLayout(this);
+    top_layout->addLayout(select_layout);
 
-    //选项  空格编码为+号   默认选中
+    this->encode_all = new QRadioButton("对所有字符编码", this);
+    select_layout->addWidget(this->encode_all);
+
+    this->encode_rfc3986 = new QRadioButton("RFC3986编码", this);
+    this->encode_rfc3986->setToolTip("RFC3986中规定 a-z A-Z 0-9 和四个字符-_.~ 以外的其他字符都需要编码，通过选项控制以下分隔符是否编码 !*'();:@&=+$,/?#[] ");
+    select_layout->addWidget(this->encode_rfc3986);
+
+    this->encode_noprint = new QRadioButton("对不可打印字符编码", this);
+    select_layout->addWidget(this->encode_noprint);
+
+    select_layout->addStretch();
+
+    this->encode_rfc3986->setChecked(true);
+
+    //
+    auto option_layout = new QHBoxLayout(this);
+    top_layout->addLayout(option_layout);
+
+    this->space_to_plus = new QCheckBox("空格编码为\"+\"", this);
+    this->space_to_plus->setCheckState(Qt::Checked);
+    option_layout->addWidget(this->space_to_plus);
+
+    option_layout->addSpacing(30);
+
+    this->encode_separator = new QCheckBox("对分隔符编码", this);
+    this->encode_separator->setChecked(false);
+    this->encode_separator->setEnabled(true);
+    option_layout->addWidget(this->encode_separator);
+
+    option_layout->addStretch();
 
     this->data_view = new DataView(this);
     top_layout->addWidget(this->data_view);
+
+    //
+    connect(this->encode_rfc3986, &QRadioButton::toggled, [this]{
+        if (this->encode_rfc3986->isChecked()) {
+            this->encode_separator->setEnabled(true);
+        } else {
+            this->encode_separator->setEnabled(false);
+        }
+    });
 
     return;
 }
