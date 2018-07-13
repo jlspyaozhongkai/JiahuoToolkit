@@ -52,6 +52,9 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list_new = new QPushButton("新建", this);
     snap_left_btn_layout->addWidget(this->m_snap_list_new);
 
+    this->m_snap_list_del = new QPushButton("删除", this);
+    snap_left_btn_layout->addWidget(this->m_snap_list_del);
+
     this->m_snap_list_apply = new QPushButton("应用", this);
     snap_left_btn_layout->addWidget(this->m_snap_list_apply);
 
@@ -79,13 +82,27 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_edit_cancel = new QPushButton("取消", this);
     snap_right_btn_layout->addWidget(this->m_snap_edit_cancel);
 
-    //
+    //设置当前
     auto using_item = new QListWidgetItem();
     using_item->setText("当前");
     this->m_snap_list->addItem(using_item);
 
     connect(this->m_snap_list, &QListWidget::currentRowChanged, [this](int row){
         this->snapSelect(row);
+    });
+    this->m_snap_list->setCurrentRow(0);
+    this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
+
+    connect(this->m_snap_list_new, &QPushButton::pressed, [this]{
+        this->snapNew();
+    });
+
+    connect(this->m_snap_list_del, &QPushButton::pressed, [this]{
+        this->snapDel();
+    });
+
+    connect(this->m_snap_list_apply, &QPushButton::pressed, [this]{
+        this->snapApply();
     });
 
     //编辑
@@ -97,20 +114,49 @@ HostDialog::HostDialog(QWidget *parent)
 
 void HostDialog::snapSelect(int row)
 {
-    qDebug() << "Snap list row changed:" << row;
+    qDebug() << "Snapshot list row changed:" << row;
 
     if (row == this->m_snap_list->count() - 1) {
         qDebug() << "Snap list select now";
 
         this->m_snap_list_apply->setEnabled(false);
+        this->m_snap_list_del->setEnabled(false);
         this->m_snap_edit_ok->setEnabled(false);
         this->m_snap_edit_cancel->setEnabled(false);
         return;
+    } else {
+        this->m_snap_list_apply->setEnabled(true);
+        this->m_snap_list_del->setEnabled(true);
+        this->m_snap_edit_ok->setEnabled(true);
+        this->m_snap_edit_cancel->setEnabled(true);
     }
 
-    this->m_snap_list_apply->setEnabled(true);
-    this->m_snap_edit_ok->setEnabled(false);
-    this->m_snap_edit_cancel->setEnabled(false);
+    return;
+}
+
+void HostDialog::snapNew()
+{
+    qDebug() << "Snapshot new";
+
+    auto new_one = new QListWidgetItem();
+    new_one->setText("新快照");
+    new_one->setFlags(new_one->flags() | Qt::ItemIsEditable);
+    this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_one);
+
+    return;
+}
+
+void HostDialog::snapDel()
+{
+    qDebug() << "Snapshot del";
+
+    return;
+}
+
+void HostDialog::snapApply()
+{
+    qDebug() << "Snapshot apply";
+
     return;
 }
 
