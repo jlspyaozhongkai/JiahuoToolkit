@@ -8,6 +8,7 @@
 #include "tools/ascii/ascii.h"
 #include "tools/clipboard/clipboard.h"
 #include "tools/convert/convert.h"
+#include "tools/host/host.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -35,6 +36,7 @@ void MainWindow::setupMenu()
     tool_menu->addAction("ASCII码表", []{AsciiDialog::launch();});
     tool_menu->addAction("剪切板查看", []{ClipBoardDialog::launch();});
     tool_menu->addAction("编码转换", []{ConvertDialog::launch();});
+    tool_menu->addAction("Host文件", []{HostDialog::launch();});
 
     return;
 }
