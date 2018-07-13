@@ -142,6 +142,9 @@ void HostDialog::snapNew()
     new_one->setText("新快照");
     new_one->setFlags(new_one->flags() | Qt::ItemIsEditable);
     this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_one);
+    this->m_snap_list->setCurrentItem(new_one);
+
+    //再释放一个鼠标单击事件到这个item就进入编辑了
 
     return;
 }
