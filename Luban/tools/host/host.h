@@ -42,7 +42,7 @@ private:
     void snapNew();
     void snapDel();
     void snapApply();
-    void snapOk();
+    void snapSave();
     void snapCancel();
 
     void flushSnap(int row);
@@ -56,7 +56,7 @@ private:
     QPushButton *m_snap_new = NULL;
     QPushButton *m_snap_del = NULL;
     QPushButton *m_snap_apply = NULL;
-    QPushButton *m_snap_ok = NULL;
+    QPushButton *m_snap_save = NULL;
     QPushButton *m_snap_cancel = NULL;
 };
 

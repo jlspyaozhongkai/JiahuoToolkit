@@ -87,8 +87,8 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_apply = new QPushButton("应用", this);
     snap_right_btn_layout->addWidget(this->m_snap_apply);
 
-    this->m_snap_ok = new QPushButton("保存", this);
-    snap_right_btn_layout->addWidget(this->m_snap_ok);
+    this->m_snap_save = new QPushButton("保存", this);
+    snap_right_btn_layout->addWidget(this->m_snap_save);
 
     this->m_snap_cancel = new QPushButton("取消", this);
     snap_right_btn_layout->addWidget(this->m_snap_cancel);
@@ -116,7 +116,9 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list->setItem(0, 0, prefix_item);
     this->m_snap_list->setItem(0, 1, name_item);
 
-    connect(this->m_snap_list, &QTableWidget::currentCellChanged, [this](int currentRow, int currentColumn, int previousRow, int previousColumn){
+    connect(this->m_snap_list, &QTableWidget::currentCellChanged, [this]
+            (int currentRow, int currentColumn,
+            int previousRow, int previousColumn){
         Q_UNUSED(currentColumn)
         Q_UNUSED(previousColumn)
         if (currentRow != previousRow) {    //行变化
@@ -137,8 +139,8 @@ HostDialog::HostDialog(QWidget *parent)
         this->snapApply();
     });
 
-    connect(this->m_snap_ok, &QPushButton::pressed, [this]{
-        this->snapOk();
+    connect(this->m_snap_save, &QPushButton::pressed, [this]{
+        this->snapSave();
     });
 
     connect(this->m_snap_cancel, &QPushButton::pressed, [this]{
@@ -169,8 +171,16 @@ void HostDialog::flushSnap(int row)
 
     if (snap->m_editing == snap->m_saving) {
         prefix_item->setText(" ");
+
+        this->m_snap_apply->setEnabled(true);
+        this->m_snap_save->setEnabled(false);
+        this->m_snap_cancel->setEnabled(false);
     } else {
         prefix_item->setText("*");
+
+        this->m_snap_apply->setEnabled(false);
+        this->m_snap_save->setEnabled(true);
+        this->m_snap_cancel->setEnabled(true);
     }
 
     return;
@@ -183,7 +193,7 @@ void HostDialog::snapListSelect(int row)
 
         this->m_snap_del->setEnabled(false);
         this->m_snap_apply->setEnabled(false);
-        this->m_snap_ok->setEnabled(false);
+        this->m_snap_save->setEnabled(false);
         this->m_snap_cancel->setEnabled(false);
 
         //读取
@@ -199,12 +209,11 @@ void HostDialog::snapListSelect(int row)
 
         this->m_snap_del->setEnabled(true);
         this->m_snap_apply->setEnabled(true);
-        this->m_snap_ok->setEnabled(true);
+        this->m_snap_save->setEnabled(true);
         this->m_snap_cancel->setEnabled(true);
 
         //载入
-        auto cur_row = this->m_snap_list->currentRow();
-        auto name_item = this->m_snap_list->item(cur_row, 1);
+        auto name_item = this->m_snap_list->item(row, 1);
         Q_ASSERT(name_item != NULL);
 
         HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
@@ -212,7 +221,7 @@ void HostDialog::snapListSelect(int row)
         this->m_snap_edit->setText(snap->m_editing);
         this->m_snap_edit->blockSignals(false);
 
-        flushSnap(cur_row);
+        flushSnap(row);
         return;
     }
 }
@@ -286,9 +295,9 @@ void HostDialog::snapApply()
     return;
 }
 
-void HostDialog::snapOk()
+void HostDialog::snapSave()
 {
-    qDebug() << "Snapshot ok";
+    qDebug() << "Snapshot save";
 
     return;
 }
