@@ -11,6 +11,8 @@
 #include <QHeaderView>
 #include <QColor>
 #include <QFile>
+#include <QTime>
+#include <QDateTime>
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -229,15 +231,15 @@ void HostDialog::snapListSelect(int row)
 void HostDialog::snapContentChanged()
 {
     //保存
-    auto cur_row = this->m_snap_list->currentRow();
+    auto row = this->m_snap_list->currentRow();
 
-    auto name_item = this->m_snap_list->item(cur_row, 1);
+    auto name_item = this->m_snap_list->item(row, 1);
     Q_ASSERT(name_item != NULL);
 
     HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
     snap->m_editing = this->m_snap_edit->toPlainText();
 
-    flushSnap(cur_row);
+    flushSnap(row);
     return;
 }
 
@@ -246,7 +248,8 @@ void HostDialog::snapNew()
     qDebug() << "Snapshot new";
 
     auto snap = new HostSnap();
-    snap->m_name = "新快照";
+    auto datatime_now = QDateTime::currentDateTime();
+    snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
 
     auto prefix_item = new QTableWidgetItem();
     prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
@@ -266,7 +269,7 @@ void HostDialog::snapNew()
     this->m_snap_list->setItem(index, 0, prefix_item);
     this->m_snap_list->setItem(index, 1, name_item);
 
-    this->m_snap_list->setCurrentItem(name_item);
+    this->m_snap_list->setCurrentItem(name_item);   //选中
     this->m_snap_list->setFocus();
 
     return;
@@ -274,17 +277,21 @@ void HostDialog::snapNew()
 
 void HostDialog::snapDel()
 {
-    qDebug() << "Snapshot del";
+    auto row = this->m_snap_list->currentRow();
 
-    auto index = this->m_snap_list->currentRow();
+    qDebug() << "Snapshot del row:" << row;
 
-    auto cur_item = this->m_snap_list->item(index, 1);
-    Q_ASSERT(cur_item != NULL);
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
 
-    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
     delete snap;
 
-    this->m_snap_list->removeRow(index);
+    this->m_snap_list->removeRow(row);    //删除行
+    //this->m_snap_list->setCurrentCell(row, 1);
+    this->m_snap_list->setFocus();
+    this->m_snap_list->selectRow(row);
+
     return;
 }
 
