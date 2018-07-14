@@ -3,6 +3,8 @@
 #include <QTabWidget>
 #include <QSplitter>
 #include <QMouseEvent>
+#include <QEnterEvent>
+#include <QCursor>
 #include <QApplication>
 #include <QDebug>
 #include "host.h"
@@ -45,7 +47,7 @@ HostDialog::HostDialog(QWidget *parent)
     snap_left_layout->setSpacing(1);
     snap_left_widget->setLayout(snap_left_layout);
 
-    this->m_snap_list = new QListWidget(this);
+    this->m_snap_list = new MyListWidget(this);
     snap_left_layout->addWidget(this->m_snap_list);
 
     auto snap_left_btn_layout = new QHBoxLayout(this);
@@ -119,7 +121,7 @@ void HostDialog::snapSelect(int row)
     qDebug() << "Snapshot list row changed:" << row;
 
     if (row == this->m_snap_list->count() - 1) {
-        qDebug() << "Snap list select now";
+        qDebug() << "Snapshot list select now";
 
         this->m_snap_list_apply->setEnabled(false);
         this->m_snap_list_del->setEnabled(false);
@@ -145,19 +147,11 @@ void HostDialog::snapNew()
     new_item->setFlags(new_item->flags() | Qt::ItemIsEditable);
     this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_item);
     this->m_snap_list->setCurrentItem(new_item);
+    this->m_snap_list->setFocus();
 
-    //模拟鼠标单击
-    auto rect = this->m_snap_list->visualItemRect(new_item);
-    QPoint pos = rect.center();
-    qDebug() << pos;
-    pos = this->m_snap_list->mapToGlobal(pos);
-    qDebug() << pos;
-
-    auto press = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    QApplication::sendEvent(QWidget::focusWidget(), press);
-
-    auto release = new QMouseEvent(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    QApplication::sendEvent(QWidget::focusWidget(), release);
+    QPoint local_pos = this->m_snap_list->visualItemRect(new_item).center();
+    QPoint global_pos = this->m_snap_list->mapToGlobal(local_pos);
+    qDebug() << "Click at(local):" << local_pos << "Click at(global):" << global_pos;
 
     return;
 }
