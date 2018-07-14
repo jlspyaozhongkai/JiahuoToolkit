@@ -32,7 +32,8 @@ SOURCES += \
     tools/convert/coder_input.cpp \
     tools/convert/coder_url.cpp \
     tools/convert/coder_base64.cpp \
-    tools/host/host.cpp
+    tools/host/host.cpp \
+    tools/mouse/mouse.cpp
 
 
 HEADERS += \
@@ -43,5 +44,6 @@ HEADERS += \
     tools/convert/coder_input.h \
     tools/convert/coder_url.h \
     tools/convert/coder_base64.h \
-    tools/host/host.h
+    tools/host/host.h \
+    tools/mouse/mouse.h
 
