@@ -165,6 +165,15 @@ void HostDialog::snapDel()
 {
     qDebug() << "Snapshot del";
 
+    auto cur_item = this->m_snap_list->currentItem();
+    Q_ASSERT(cur_item != NULL);
+
+    this->m_snap_list->removeItemWidget(cur_item);
+
+    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+    delete snap;
+    delete cur_item;
+
     return;
 }
 

@@ -16,7 +16,9 @@
 class HostSnap {
 public:
     HostSnap() {}
-    ~HostSnap() {}
+    ~HostSnap() {
+        qDebug() << "delete HostSnap";
+    }
 
     QListWidgetItem *m_item = NULL;
 
