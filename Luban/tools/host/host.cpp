@@ -360,6 +360,7 @@ QString HostDialog::getHost()
 
     QFile file(host_path);
     if (! file.open(QFile::ReadOnly | QFile::Text)) {
+        qDebug() << "Open file " << host_path << " failed.";
         return ret_val;
     }
     QTextStream in(&file);
@@ -371,7 +372,19 @@ QString HostDialog::getHost()
 
 void HostDialog::setHost(QString txt)
 {
-    Q_UNUSED(txt);
+    //TODO: 暂时只支持Mac  /private/etc/hosts
+    QString host_path = "/private/etc/hosts";
+
+    QFile file(host_path);
+    if (! file.open(QFile::WriteOnly | QFile::Text)) {
+        qDebug() << "Open file " << host_path << " failed.";
+        return;
+    }
+    QTextStream out(&file);
+    out << txt;
+    out.flush();
+    file.close();
+
     return;
 }
 
