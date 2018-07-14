@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QIcon>
 #include <QDebug>
+#include <QHeaderView>
 #include <QColor>
 #include "host.h"
 
@@ -51,7 +52,7 @@ HostDialog::HostDialog(QWidget *parent)
     snap_left_layout->setSpacing(1);
     snap_left_widget->setLayout(snap_left_layout);
 
-    this->m_snap_list = new QListWidget(this);
+    this->m_snap_list = new QTableWidget(this);
     this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
     snap_left_layout->addWidget(this->m_snap_list);
 
@@ -92,15 +93,35 @@ HostDialog::HostDialog(QWidget *parent)
     snap_right_btn_layout->addWidget(this->m_snap_cancel);
 
     //设置当前
-    auto using_item = new QListWidgetItem();
-    using_item->setText("当前");
-    using_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
-    this->m_snap_list->addItem(using_item);
+    this->m_snap_list->setSelectionBehavior(QTableWidget::SelectRows);
+    this->m_snap_list->horizontalHeader()->setStretchLastSection(true);
+    this->m_snap_list->verticalHeader()->hide();
+    this->m_snap_list->horizontalHeader()->hide();
+    this->m_snap_list->setShowGrid(false);
+    this->m_snap_list->setColumnCount(2);
+    this->m_snap_list->setColumnWidth(0, 20);
+    this->m_snap_list->setRowCount(1);
 
-    connect(this->m_snap_list, &QListWidget::currentRowChanged, [this](int row){
-        this->snapListSelect(row);
+    auto prefix_item = new QTableWidgetItem();
+    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    prefix_item->setText(" ");
+
+    auto name_item = new QTableWidgetItem();
+    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    name_item->setText("当前");
+    name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
+
+    this->m_snap_list->setItem(0, 0, prefix_item);
+    this->m_snap_list->setItem(0, 1, name_item);
+
+    connect(this->m_snap_list, &QTableWidget::currentCellChanged, [this](int currentRow, int currentColumn, int previousRow, int previousColumn){
+        Q_UNUSED(currentColumn)
+        Q_UNUSED(previousColumn)
+        if (currentRow != previousRow) {
+            this->snapListSelect(currentRow);
+        }
     });
-    this->m_snap_list->setCurrentRow(0);
+    this->m_snap_list->setCurrentItem(name_item);
 
     connect(this->m_snap_new, &QPushButton::pressed, [this]{
         this->snapNew();
@@ -133,12 +154,21 @@ HostDialog::HostDialog(QWidget *parent)
     return;
 }
 
-void HostDialog::flushSnap(HostSnap *snap)
+void HostDialog::flushSnap(int row)
 {
+    auto prefix_item = this->m_snap_list->item(row, 0);
+    Q_ASSERT(prefix_item != NULL);
+
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+    Q_ASSERT(snap != NULL);
+
     if (snap->m_editing == snap->m_saving) {
-        snap->m_item->setTextColor(QColor(0, 0, 0));
+        prefix_item->setText(" ");
     } else {
-        snap->m_item->setTextColor(QColor(255, 0, 0));
+        prefix_item->setText("*");
     }
 
     return;
@@ -148,7 +178,7 @@ void HostDialog::snapListSelect(int row)
 {
     qDebug() << "Snapshot list row changed to:" << row;
 
-    if (row == this->m_snap_list->count() - 1) {
+    if (row == this->m_snap_list->rowCount() - 1) {
         qDebug() << "Snapshot list select now";
 
         this->m_snap_del->setEnabled(false);
@@ -166,15 +196,16 @@ void HostDialog::snapListSelect(int row)
         this->m_snap_cancel->setEnabled(true);
 
         //载入
-        auto cur_item = this->m_snap_list->currentItem();
-        Q_ASSERT(cur_item != NULL);
+        auto cur_row = this->m_snap_list->currentRow();
+        auto name_item = this->m_snap_list->item(cur_row, 1);
+        Q_ASSERT(name_item != NULL);
 
-        HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+        HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
         this->m_snap_edit->blockSignals(true);
         this->m_snap_edit->setText(snap->m_editing);
         this->m_snap_edit->blockSignals(false);
 
-        flushSnap(snap);
+        flushSnap(cur_row);
         return;
     }
 }
@@ -182,13 +213,15 @@ void HostDialog::snapListSelect(int row)
 void HostDialog::snapContentChanged()
 {
     //保存
-    auto cur_item = this->m_snap_list->currentItem();
-    Q_ASSERT(cur_item != NULL);
+    auto cur_row = this->m_snap_list->currentRow();
 
-    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+    auto name_item = this->m_snap_list->item(cur_row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
     snap->m_editing = this->m_snap_edit->toPlainText();
 
-    flushSnap(snap);
+    flushSnap(cur_row);
     return;
 }
 
@@ -199,16 +232,25 @@ void HostDialog::snapNew()
     auto snap = new HostSnap();
     snap->m_name = "新快照";
 
-    auto new_item = new QListWidgetItem();
-    new_item->setText(snap->m_name);
-    new_item->setFlags(new_item->flags() | Qt::ItemIsEditable);
-    new_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
-    new_item->setIcon(QIcon("*"));
+    auto prefix_item = new QTableWidgetItem();
+    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    prefix_item->setText(" ");
 
-    snap->m_item = new_item;
+    auto name_item = new QTableWidgetItem();
+    name_item->setFlags(name_item->flags() | Qt::ItemIsEditable);
+    name_item->setText(snap->m_name);
+    name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
+    name_item->setIcon(QIcon("*"));
 
-    this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_item);
-    this->m_snap_list->setCurrentItem(new_item);
+    snap->m_item = name_item;
+
+    auto index = this->m_snap_list->rowCount() - 1;
+
+    this->m_snap_list->insertRow(index);
+    this->m_snap_list->setItem(index, 0, prefix_item);
+    this->m_snap_list->setItem(index, 1, name_item);
+
+    this->m_snap_list->setCurrentItem(name_item);
     this->m_snap_list->setFocus();
 
     return;
@@ -218,15 +260,15 @@ void HostDialog::snapDel()
 {
     qDebug() << "Snapshot del";
 
-    auto cur_item = this->m_snap_list->currentItem();
-    Q_ASSERT(cur_item != NULL);
+    auto index = this->m_snap_list->currentRow();
 
-    this->m_snap_list->removeItemWidget(cur_item);
+    auto cur_item = this->m_snap_list->item(index, 1);
+    Q_ASSERT(cur_item != NULL);
 
     HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
     delete snap;
-    delete cur_item;
 
+    this->m_snap_list->removeRow(index);
     return;
 }
 

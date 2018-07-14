@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QListWidget>
+#include <QTableWidget>
 #include <QTimer>
 #include <QEvent>
 #include <QMouseEvent>
@@ -20,7 +21,7 @@ public:
         qDebug() << "delete HostSnap";
     }
 
-    QListWidgetItem *m_item = NULL;
+    QTableWidgetItem *m_item = NULL;
 
     QString m_name;
     QString m_editing;
@@ -44,9 +45,9 @@ private:
     void snapOk();
     void snapCancel();
 
-    void flushSnap(HostSnap *snap);
+    void flushSnap(int row);
 
-    QListWidget *m_snap_list = NULL;
+    QTableWidget *m_snap_list = NULL;
     QTextEdit *m_snap_edit = NULL;
 
     QPushButton *m_snap_new = NULL;
