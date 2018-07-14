@@ -40,16 +40,17 @@ private:
     void snapNew();
     void snapDel();
     void snapApply();
+    void snapOk();
+    void snapCancel();
 
     QListWidget *m_snap_list = NULL;
-    QPushButton *m_snap_list_new = NULL;
-    QPushButton *m_snap_list_del = NULL;
-
-
     QTextEdit *m_snap_edit = NULL;
-    QPushButton *m_snap_edit_apply = NULL;
-    QPushButton *m_snap_edit_ok = NULL;
-    QPushButton *m_snap_edit_cancel = NULL;
+
+    QPushButton *m_snap_new = NULL;
+    QPushButton *m_snap_del = NULL;
+    QPushButton *m_snap_apply = NULL;
+    QPushButton *m_snap_ok = NULL;
+    QPushButton *m_snap_cancel = NULL;
 };
 
 #endif //TOOL_HOST_H

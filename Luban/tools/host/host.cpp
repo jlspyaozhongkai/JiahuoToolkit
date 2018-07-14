@@ -6,6 +6,7 @@
 #include <QEnterEvent>
 #include <QCursor>
 #include <QApplication>
+#include <QIcon>
 #include <QDebug>
 #include "host.h"
 
@@ -56,11 +57,11 @@ HostDialog::HostDialog(QWidget *parent)
     auto snap_left_btn_layout = new QHBoxLayout(this);
     snap_left_layout->addLayout(snap_left_btn_layout);
 
-    this->m_snap_list_new = new QPushButton("新建", this);
-    snap_left_btn_layout->addWidget(this->m_snap_list_new);
+    this->m_snap_new = new QPushButton("新建", this);
+    snap_left_btn_layout->addWidget(this->m_snap_new);
 
-    this->m_snap_list_del = new QPushButton("删除", this);
-    snap_left_btn_layout->addWidget(this->m_snap_list_del);
+    this->m_snap_del = new QPushButton("删除", this);
+    snap_left_btn_layout->addWidget(this->m_snap_del);
 
     snap_left_btn_layout->addStretch();
 
@@ -80,14 +81,14 @@ HostDialog::HostDialog(QWidget *parent)
 
     snap_right_btn_layout->addStretch();
 
-    this->m_snap_edit_apply = new QPushButton("应用", this);
-    snap_right_btn_layout->addWidget(this->m_snap_edit_apply);
+    this->m_snap_apply = new QPushButton("应用", this);
+    snap_right_btn_layout->addWidget(this->m_snap_apply);
 
-    this->m_snap_edit_ok = new QPushButton("保存", this);
-    snap_right_btn_layout->addWidget(this->m_snap_edit_ok);
+    this->m_snap_ok = new QPushButton("保存", this);
+    snap_right_btn_layout->addWidget(this->m_snap_ok);
 
-    this->m_snap_edit_cancel = new QPushButton("取消", this);
-    snap_right_btn_layout->addWidget(this->m_snap_edit_cancel);
+    this->m_snap_cancel = new QPushButton("取消", this);
+    snap_right_btn_layout->addWidget(this->m_snap_cancel);
 
     //设置当前
     auto using_item = new QListWidgetItem();
@@ -100,30 +101,33 @@ HostDialog::HostDialog(QWidget *parent)
     });
     this->m_snap_list->setCurrentRow(0);
 
-
-    connect(this->m_snap_list_new, &QPushButton::pressed, [this]{
+    connect(this->m_snap_new, &QPushButton::pressed, [this]{
         this->snapNew();
     });
 
-    connect(this->m_snap_list_del, &QPushButton::pressed, [this]{
+    connect(this->m_snap_del, &QPushButton::pressed, [this]{
         this->snapDel();
+    });
+
+    connect(this->m_snap_apply, &QPushButton::pressed, [this]{
+        this->snapApply();
+    });
+
+    connect(this->m_snap_ok, &QPushButton::pressed, [this]{
+
+    });
+
+    connect(this->m_snap_cancel, &QPushButton::pressed, [this]{
+
+    });
+
+    connect(this->m_snap_edit, &QTextEdit::textChanged, [this]{
+
     });
 
     //编辑
     auto edit_widget = new QWidget(this);
     top_tab->addTab(edit_widget, "编辑");
-
-    connect(this->m_snap_edit_apply, &QPushButton::pressed, [this]{
-        this->snapApply();
-    });
-
-    connect(this->m_snap_edit_ok, &QPushButton::pressed, [this]{
-
-    });
-
-    connect(this->m_snap_edit_cancel, &QPushButton::pressed, [this]{
-
-    });
 
     return;
 }
@@ -135,17 +139,17 @@ void HostDialog::snapSelect(int row)
     if (row == this->m_snap_list->count() - 1) {
         qDebug() << "Snapshot list select now";
 
-        this->m_snap_list_del->setEnabled(false);
-        this->m_snap_edit_apply->setEnabled(false);
-        this->m_snap_edit_ok->setEnabled(false);
-        this->m_snap_edit_cancel->setEnabled(false);
+        this->m_snap_del->setEnabled(false);
+        this->m_snap_apply->setEnabled(false);
+        this->m_snap_ok->setEnabled(false);
+        this->m_snap_cancel->setEnabled(false);
         return;
     } else {
 
-        this->m_snap_list_del->setEnabled(true);
-        this->m_snap_edit_apply->setEnabled(true);
-        this->m_snap_edit_ok->setEnabled(true);
-        this->m_snap_edit_cancel->setEnabled(true);
+        this->m_snap_del->setEnabled(true);
+        this->m_snap_apply->setEnabled(true);
+        this->m_snap_ok->setEnabled(true);
+        this->m_snap_cancel->setEnabled(true);
     }
 
     return;
@@ -162,6 +166,7 @@ void HostDialog::snapNew()
     new_item->setText(snap->m_name);
     new_item->setFlags(new_item->flags() | Qt::ItemIsEditable);
     new_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
+    new_item->setIcon(QIcon("*"));
 
     this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_item);
     this->m_snap_list->setCurrentItem(new_item);
@@ -189,6 +194,20 @@ void HostDialog::snapDel()
 void HostDialog::snapApply()
 {
     qDebug() << "Snapshot apply";
+
+    return;
+}
+
+void HostDialog::snapOk()
+{
+    qDebug() << "Snapshot ok";
+
+    return;
+}
+
+void HostDialog::snapCancel()
+{
+    qDebug() << "Snapshot ok";
 
     return;
 }
