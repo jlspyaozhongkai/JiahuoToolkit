@@ -27,14 +27,14 @@ MouseDialog::MouseDialog(QWidget *parent)
     this->m_showy->setReadOnly(true);
     top_layout->addWidget(this->m_showy, 1, 1, 1, 2);
 
-    this->m_timer = new QTimer();
-    connect(this->m_timer, &QTimer::timeout, [this]{
+    auto timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this]{
         //qDebug() << "Timeout";
         QPoint pos = QCursor::pos();
         this->m_showx->setText(QString::asprintf("%d", pos.x()));
         this->m_showy->setText(QString::asprintf("%d", pos.y()));
     });
-    this->m_timer->start(50);
+    timer->start(50);
 
     return;
 }
