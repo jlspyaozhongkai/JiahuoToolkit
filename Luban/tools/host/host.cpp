@@ -121,7 +121,7 @@ HostDialog::HostDialog(QWidget *parent)
 
 void HostDialog::snapSelect(int row)
 {
-    qDebug() << "Snapshot list row changed:" << row;
+    qDebug() << "Snapshot list row changed to:" << row;
 
     if (row == this->m_snap_list->count() - 1) {
         qDebug() << "Snapshot list select now";
