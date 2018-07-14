@@ -103,13 +103,14 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list->setRowCount(1);
 
     auto prefix_item = new QTableWidgetItem();
+    prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
     prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
     prefix_item->setText(" ");
 
     auto name_item = new QTableWidgetItem();
-    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
-    name_item->setText("当前");
     name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
+    name_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    name_item->setText("当前");
 
     this->m_snap_list->setItem(0, 0, prefix_item);
     this->m_snap_list->setItem(0, 1, name_item);
@@ -117,7 +118,7 @@ HostDialog::HostDialog(QWidget *parent)
     connect(this->m_snap_list, &QTableWidget::currentCellChanged, [this](int currentRow, int currentColumn, int previousRow, int previousColumn){
         Q_UNUSED(currentColumn)
         Q_UNUSED(previousColumn)
-        if (currentRow != previousRow) {
+        if (currentRow != previousRow) {    //行变化
             this->snapListSelect(currentRow);
         }
     });
@@ -190,6 +191,8 @@ void HostDialog::snapListSelect(int row)
 
         return;
     } else {
+        qDebug() << "Snapshot list select:" << row;
+
         this->m_snap_del->setEnabled(true);
         this->m_snap_apply->setEnabled(true);
         this->m_snap_ok->setEnabled(true);
@@ -233,14 +236,14 @@ void HostDialog::snapNew()
     snap->m_name = "新快照";
 
     auto prefix_item = new QTableWidgetItem();
+    prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
     prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
     prefix_item->setText(" ");
 
     auto name_item = new QTableWidgetItem();
+    name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
     name_item->setFlags(name_item->flags() | Qt::ItemIsEditable);
     name_item->setText(snap->m_name);
-    name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
-    name_item->setIcon(QIcon("*"));
 
     snap->m_item = name_item;
 
