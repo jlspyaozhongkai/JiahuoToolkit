@@ -36,7 +36,8 @@ public:
     HostDialog(QWidget *parent = 0);
     ~HostDialog() {}
 private:
-    void snapSelect(int row);
+    void snapListSelect(int row);
+    void snapContentChanged();
     void snapNew();
     void snapDel();
     void snapApply();

@@ -97,7 +97,7 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list->addItem(using_item);
 
     connect(this->m_snap_list, &QListWidget::currentRowChanged, [this](int row){
-        this->snapSelect(row);
+        this->snapListSelect(row);
     });
     this->m_snap_list->setCurrentRow(0);
 
@@ -114,15 +114,15 @@ HostDialog::HostDialog(QWidget *parent)
     });
 
     connect(this->m_snap_ok, &QPushButton::pressed, [this]{
-
+        this->snapOk();
     });
 
     connect(this->m_snap_cancel, &QPushButton::pressed, [this]{
-
+        this->snapCancel();
     });
 
     connect(this->m_snap_edit, &QTextEdit::textChanged, [this]{
-
+        this->snapContentChanged();
     });
 
     //编辑
@@ -132,7 +132,7 @@ HostDialog::HostDialog(QWidget *parent)
     return;
 }
 
-void HostDialog::snapSelect(int row)
+void HostDialog::snapListSelect(int row)
 {
     qDebug() << "Snapshot list row changed to:" << row;
 
@@ -145,12 +145,30 @@ void HostDialog::snapSelect(int row)
         this->m_snap_cancel->setEnabled(false);
         return;
     } else {
-
         this->m_snap_del->setEnabled(true);
         this->m_snap_apply->setEnabled(true);
         this->m_snap_ok->setEnabled(true);
         this->m_snap_cancel->setEnabled(true);
     }
+
+    //载入
+    auto cur_item = this->m_snap_list->currentItem();
+    Q_ASSERT(cur_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+    this->m_snap_edit->setText(snap->m_editing);
+
+    return;
+}
+
+void HostDialog::snapContentChanged()
+{
+    //保存
+    auto cur_item = this->m_snap_list->currentItem();
+    Q_ASSERT(cur_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+    snap->m_editing = this->m_snap_edit->toPlainText();
 
     return;
 }
