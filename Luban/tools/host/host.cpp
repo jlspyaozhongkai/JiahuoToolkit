@@ -136,9 +136,9 @@ HostDialog::HostDialog(QWidget *parent)
 void HostDialog::flushSnap(HostSnap *snap)
 {
     if (snap->m_editing == snap->m_saving) {
-        snap->m_item->setTextColor(QColor(255, 0, 0, 0));
+        snap->m_item->setTextColor(QColor(0, 0, 0));
     } else {
-        snap->m_item->setTextColor(QColor(0, 0, 0, 0));
+        snap->m_item->setTextColor(QColor(255, 0, 0));
     }
 
     return;
@@ -170,7 +170,9 @@ void HostDialog::snapListSelect(int row)
         Q_ASSERT(cur_item != NULL);
 
         HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+        this->m_snap_edit->blockSignals(true);
         this->m_snap_edit->setText(snap->m_editing);
+        this->m_snap_edit->blockSignals(false);
 
         flushSnap(snap);
         return;
@@ -202,6 +204,8 @@ void HostDialog::snapNew()
     new_item->setFlags(new_item->flags() | Qt::ItemIsEditable);
     new_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
     new_item->setIcon(QIcon("*"));
+
+    snap->m_item = new_item;
 
     this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_item);
     this->m_snap_list->setCurrentItem(new_item);
