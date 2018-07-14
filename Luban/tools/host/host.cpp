@@ -2,6 +2,8 @@
 #include <QHBoxLayout>
 #include <QTabWidget>
 #include <QSplitter>
+#include <QMouseEvent>
+#include <QApplication>
 #include <QDebug>
 #include "host.h"
 
@@ -138,13 +140,24 @@ void HostDialog::snapNew()
 {
     qDebug() << "Snapshot new";
 
-    auto new_one = new QListWidgetItem();
-    new_one->setText("新快照");
-    new_one->setFlags(new_one->flags() | Qt::ItemIsEditable);
-    this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_one);
-    this->m_snap_list->setCurrentItem(new_one);
+    auto new_item = new QListWidgetItem();
+    new_item->setText("新快照");
+    new_item->setFlags(new_item->flags() | Qt::ItemIsEditable);
+    this->m_snap_list->insertItem(this->m_snap_list->count() - 1, new_item);
+    this->m_snap_list->setCurrentItem(new_item);
 
-    //再释放一个鼠标单击事件到这个item就进入编辑了
+    //模拟鼠标单击
+    auto rect = this->m_snap_list->visualItemRect(new_item);
+    QPoint pos = rect.center();
+    qDebug() << pos;
+    pos = this->m_snap_list->mapToGlobal(pos);
+    qDebug() << pos;
+
+    auto press = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(QWidget::focusWidget(), press);
+
+    auto release = new QMouseEvent(QEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(QWidget::focusWidget(), release);
 
     return;
 }
