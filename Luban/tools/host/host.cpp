@@ -245,7 +245,9 @@ void HostDialog::snapContentChanged()
 
 void HostDialog::snapNew()
 {
-    qDebug() << "Snapshot new";
+    auto index = this->m_snap_list->rowCount() - 1;
+
+    qDebug() << "Snapshot new at:" << index;
 
     auto snap = new HostSnap();
     auto datatime_now = QDateTime::currentDateTime();
@@ -263,8 +265,7 @@ void HostDialog::snapNew()
 
     snap->m_item = name_item;
 
-    auto index = this->m_snap_list->rowCount() - 1;
-
+    //选中
     this->m_snap_list->insertRow(index);
     this->m_snap_list->setItem(index, 0, prefix_item);
     this->m_snap_list->setItem(index, 1, name_item);
@@ -288,9 +289,12 @@ void HostDialog::snapDel()
     delete snap;
 
     this->m_snap_list->removeRow(row);    //删除行
-    //this->m_snap_list->setCurrentCell(row, 1);
+
+    auto next_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(next_item != NULL);
+
+    this->m_snap_list->setCurrentItem(next_item);   //选中
     this->m_snap_list->setFocus();
-    this->m_snap_list->selectRow(row);
 
     return;
 }
