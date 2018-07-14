@@ -20,6 +20,8 @@
 #include "coder_url.h"
 #include "coder_base64.h"
 
+#define CODERTREE_FUN (Qt::UserRole + 1)
+
 DataView::DataView(QWidget *parent)
     : QWidget(parent)
 {
@@ -341,33 +343,33 @@ WhichCoder::WhichCoder(QDialog *parent)
     //Base64
     auto base64_node = new QTreeWidgetItem();
     base64_node->setText(0, "Base64 Encode/Decode");
-    base64_node->setData(1, 0, QVariant::fromValue((void *)NULL));
+    base64_node->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)NULL));
     coder_tree->addTopLevelItem(base64_node);
 
     auto base64_encode = new QTreeWidgetItem();
     base64_encode->setText(0, "Base64 Encode");
-    base64_encode->setData(1, 0, QVariant::fromValue((void *)CoderBase64Encode::make));
+    base64_encode->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)CoderBase64Encode::make));
     base64_node->addChild(base64_encode);
 
     auto base64_decode = new QTreeWidgetItem();
     base64_decode->setText(0, "Base64 Decode");
-    base64_decode->setData(1, 0, QVariant::fromValue((void *)CoderBase64Decode::make));
+    base64_decode->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)CoderBase64Decode::make));
     base64_node->addChild(base64_decode);
 
     //URL
     auto url_node = new QTreeWidgetItem();
     url_node->setText(0, "URL Encode/Decode");
-    url_node->setData(1, 0, QVariant::fromValue((void *)NULL));
+    url_node->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)NULL));
     coder_tree->addTopLevelItem(url_node);
 
     auto url_encode = new QTreeWidgetItem();
     url_encode->setText(0, "URL Encode");
-    url_encode->setData(1, 0, QVariant::fromValue((void *)CoderUrlEncode::make));
+    url_encode->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)CoderUrlEncode::make));
     url_node->addChild(url_encode);
 
     auto url_decode = new QTreeWidgetItem();
     url_decode->setText(0, "URL Decode");
-    url_decode->setData(1, 0, QVariant::fromValue((void *)CoderUrlDecode::make));
+    url_decode->setData(1, CODERTREE_FUN, QVariant::fromValue((void *)CoderUrlDecode::make));
     url_node->addChild(url_decode);
 
     //
@@ -391,7 +393,7 @@ WhichCoder::WhichCoder(QDialog *parent)
         if (current == NULL) {
             return;
         }
-        void *data = current->data(1, 0).value<void *>();
+        void *data = current->data(1, CODERTREE_FUN).value<void *>();
         if (data == NULL) {
             ok_btn->setEnabled(false);
         } else {
@@ -404,7 +406,7 @@ WhichCoder::WhichCoder(QDialog *parent)
         if (current == NULL) {
             return;
         }
-        void *data = current->data(1, 0).value<void *>();
+        void *data = current->data(1, CODERTREE_FUN).value<void *>();
         if (data == NULL) {
             ok_btn->setEnabled(false);
             return;

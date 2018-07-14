@@ -10,39 +10,19 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QList>
+#include <QMap>
 
-class MyListWidget : public QListWidget
-{
-    Q_OBJECT
+class HostSnap {
 public:
-    MyListWidget(QWidget *parent = 0)
-        : QListWidget(parent)
-    {
-        return;
-    }
-    ~MyListWidget() {
-        return;
-    }
-protected:
-    bool event(QEvent *event) {
-        qDebug() << "List Event:" << event << event->type();
-        return QListWidget::event(event);
-    }
+    HostSnap() {}
+    ~HostSnap() {}
 
-    //void mouseMoveEvent(QMouseEvent *event)
-    //{
-    //    return QListWidget::mouseMoveEvent(event);
-    //}
-    void mousePressEvent(QMouseEvent *event)
-    {
-        qDebug() << "List mousePressEvent:" << event << event->type();
-        return QListWidget::mousePressEvent(event);
-    }
-    void mouseReleaseEvent(QMouseEvent *event)
-    {
-        qDebug() << "List mouseReleaseEvent:" << event << event->type();
-        return QListWidget::mouseReleaseEvent(event);
-    }
+    QListWidgetItem *m_item = NULL;
+
+    QString m_name;
+    QString m_editing;
+    QString m_saving;
 };
 
 class HostDialog : public QWidget
@@ -59,12 +39,13 @@ private:
     void snapDel();
     void snapApply();
 
-    MyListWidget *m_snap_list = NULL;
+    QListWidget *m_snap_list = NULL;
     QPushButton *m_snap_list_new = NULL;
     QPushButton *m_snap_list_del = NULL;
-    QPushButton *m_snap_list_apply = NULL;
+
 
     QTextEdit *m_snap_edit = NULL;
+    QPushButton *m_snap_edit_apply = NULL;
     QPushButton *m_snap_edit_ok = NULL;
     QPushButton *m_snap_edit_cancel = NULL;
 };
