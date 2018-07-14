@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QHeaderView>
 #include <QColor>
+#include <QFile>
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -177,8 +178,6 @@ void HostDialog::flushSnap(int row)
 
 void HostDialog::snapListSelect(int row)
 {
-    qDebug() << "Snapshot list row changed to:" << row;
-
     if (row == this->m_snap_list->rowCount() - 1) {
         qDebug() << "Snapshot list select now";
 
@@ -187,7 +186,12 @@ void HostDialog::snapListSelect(int row)
         this->m_snap_ok->setEnabled(false);
         this->m_snap_cancel->setEnabled(false);
 
-        //
+        //读取
+        QString txt = this->getHost();
+
+        this->m_snap_edit->blockSignals(true);
+        this->m_snap_edit->setText(txt);
+        this->m_snap_edit->blockSignals(false);
 
         return;
     } else {
@@ -293,6 +297,30 @@ void HostDialog::snapCancel()
 {
     qDebug() << "Snapshot ok";
 
+    return;
+}
+
+QString HostDialog::getHost()
+{
+    //TODO: 暂时只支持Mac  /private/etc/hosts
+    QString host_path = "/private/etc/hosts";
+
+    QString ret_val = "";
+
+    QFile file(host_path);
+    if (! file.open(QFile::ReadOnly | QFile::Text)) {
+        return ret_val;
+    }
+    QTextStream in(&file);
+    ret_val = in.readAll();
+    file.close();
+
+    return ret_val;
+}
+
+void HostDialog::setHost(QString txt)
+{
+    Q_UNUSED(txt);
     return;
 }
 

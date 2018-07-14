@@ -47,6 +47,9 @@ private:
 
     void flushSnap(int row);
 
+    QString getHost();
+    void setHost(QString txt);
+
     QTableWidget *m_snap_list = NULL;
     QTextEdit *m_snap_edit = NULL;
 
