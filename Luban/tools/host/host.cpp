@@ -50,6 +50,7 @@ HostDialog::HostDialog(QWidget *parent)
     snap_left_widget->setLayout(snap_left_layout);
 
     this->m_snap_list = new QListWidget(this);
+    this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
     snap_left_layout->addWidget(this->m_snap_list);
 
     auto snap_left_btn_layout = new QHBoxLayout(this);
@@ -98,7 +99,7 @@ HostDialog::HostDialog(QWidget *parent)
         this->snapSelect(row);
     });
     this->m_snap_list->setCurrentRow(0);
-    this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
+
 
     connect(this->m_snap_list_new, &QPushButton::pressed, [this]{
         this->snapNew();
@@ -114,6 +115,14 @@ HostDialog::HostDialog(QWidget *parent)
 
     connect(this->m_snap_edit_apply, &QPushButton::pressed, [this]{
         this->snapApply();
+    });
+
+    connect(this->m_snap_edit_ok, &QPushButton::pressed, [this]{
+
+    });
+
+    connect(this->m_snap_edit_cancel, &QPushButton::pressed, [this]{
+
     });
 
     return;
