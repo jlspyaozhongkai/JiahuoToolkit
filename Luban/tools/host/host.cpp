@@ -301,22 +301,53 @@ void HostDialog::snapDel()
 
 void HostDialog::snapApply()
 {
-    qDebug() << "Snapshot apply";
+    auto row = this->m_snap_list->currentRow();
 
+    qDebug() << "Snapshot apply row:" << row;
+
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+
+    this->setHost(snap->m_saving);
     return;
 }
 
 void HostDialog::snapSave()
 {
-    qDebug() << "Snapshot save";
+    auto row = this->m_snap_list->currentRow();
 
+    qDebug() << "Snapshot save row:" << row;
+
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+
+    snap->m_saving = snap->m_editing;
+
+    flushSnap(row);
     return;
 }
 
 void HostDialog::snapCancel()
 {
-    qDebug() << "Snapshot ok";
+    auto row = this->m_snap_list->currentRow();
 
+    qDebug() << "Snapshot cancel row:" << row;
+
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+
+    snap->m_editing = snap->m_saving;
+    this->m_snap_edit->blockSignals(true);
+    this->m_snap_edit->setText(snap->m_editing);
+    this->m_snap_edit->blockSignals(false);
+
+    flushSnap(row);
     return;
 }
 
