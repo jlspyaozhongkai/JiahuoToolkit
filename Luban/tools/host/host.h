@@ -44,6 +44,8 @@ private:
     void snapOk();
     void snapCancel();
 
+    void flushSnap(HostSnap *snap);
+
     QListWidget *m_snap_list = NULL;
     QTextEdit *m_snap_edit = NULL;
 

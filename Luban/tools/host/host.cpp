@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QIcon>
 #include <QDebug>
+#include <QColor>
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -132,6 +133,17 @@ HostDialog::HostDialog(QWidget *parent)
     return;
 }
 
+void HostDialog::flushSnap(HostSnap *snap)
+{
+    if (snap->m_editing == snap->m_saving) {
+        snap->m_item->setTextColor(QColor(255, 0, 0, 0));
+    } else {
+        snap->m_item->setTextColor(QColor(0, 0, 0, 0));
+    }
+
+    return;
+}
+
 void HostDialog::snapListSelect(int row)
 {
     qDebug() << "Snapshot list row changed to:" << row;
@@ -143,22 +155,26 @@ void HostDialog::snapListSelect(int row)
         this->m_snap_apply->setEnabled(false);
         this->m_snap_ok->setEnabled(false);
         this->m_snap_cancel->setEnabled(false);
+
+        //
+
         return;
     } else {
         this->m_snap_del->setEnabled(true);
         this->m_snap_apply->setEnabled(true);
         this->m_snap_ok->setEnabled(true);
         this->m_snap_cancel->setEnabled(true);
+
+        //载入
+        auto cur_item = this->m_snap_list->currentItem();
+        Q_ASSERT(cur_item != NULL);
+
+        HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
+        this->m_snap_edit->setText(snap->m_editing);
+
+        flushSnap(snap);
+        return;
     }
-
-    //载入
-    auto cur_item = this->m_snap_list->currentItem();
-    Q_ASSERT(cur_item != NULL);
-
-    HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
-    this->m_snap_edit->setText(snap->m_editing);
-
-    return;
 }
 
 void HostDialog::snapContentChanged()
@@ -170,6 +186,7 @@ void HostDialog::snapContentChanged()
     HostSnap *snap = (HostSnap *)(cur_item->data(SNAPLIST_DATA).value<void *>());
     snap->m_editing = this->m_snap_edit->toPlainText();
 
+    flushSnap(snap);
     return;
 }
 
