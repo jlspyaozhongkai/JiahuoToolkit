@@ -266,7 +266,25 @@ void HostDialog::snapListRename(int row)
 void HostDialog::snapDropRow(int from, int to)
 {
     qDebug() << "Snapshot drop from:" << from << " to:" << to;
+    if (from == to) {
+        return;
+    }
 
+    //定位item
+    QTableWidgetItem *name_item = this->m_snap_list->item(from, 1);
+    Q_ASSERT(name_item != NULL);
+
+    //在指定的位置插入
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+    this->insertSnap(to, snap);
+
+    //然后默默的删除行
+    int row = this->m_snap_list->row(name_item);
+    this->m_snap_list->blockSignals(true);
+    this->m_snap_list->removeRow(row);
+    this->m_snap_list->blockSignals(false);
+
+    this->saveConfig();
     return;
 }
 
@@ -364,7 +382,6 @@ void HostDialog::snapLoad(QString name, QString content)
     snap->m_editing = snap->m_saving;
 
     this->insertSnap(row, snap);
-
     return;
 }
 
