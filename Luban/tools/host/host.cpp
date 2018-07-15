@@ -15,6 +15,7 @@
 #include <QDateTime>
 #include <QTemporaryFile>
 #include <QProcess>
+#include <QJsonDocument>
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -384,6 +385,20 @@ void HostDialog::LoadConfig()
 
 void HostDialog::saveConfig()
 {
+    QJsonDocument json_root;
+
+    int count = this->m_snap_list->rowCount() - 1;  //最好一个是当前，不算！
+    int row;
+    for (row = 0; row < count; row++) {
+
+        auto name_item = this->m_snap_list->item(row, 1);
+        Q_ASSERT(name_item != NULL);
+
+        HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+
+
+    }
+
     return;
 }
 

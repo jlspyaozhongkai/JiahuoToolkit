@@ -45,5 +45,6 @@ HEADERS += \
     tools/convert/coder_url.h \
     tools/convert/coder_base64.h \
     tools/host/host.h \
-    tools/mouse/mouse.h
+    tools/mouse/mouse.h \
+    define.h
 
