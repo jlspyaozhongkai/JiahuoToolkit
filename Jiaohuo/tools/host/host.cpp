@@ -460,12 +460,11 @@ void HostDialog::LoadConfig()
         qDebug() << errmsg;
         return;
     }
-    QTextStream in(&file);
-    QString json_txt = in.readAll();
+    QByteArray json_data = file.readAll();
     file.close();
-    qDebug() << "Load json: " << json_txt;
+    qDebug() << "Load json: " << json_data;
 
-    QJsonDocument json_doc = QJsonDocument::fromBinaryData(json_txt.toUtf8(), QJsonDocument::BypassValidation);
+    QJsonDocument json_doc = QJsonDocument::fromJson(json_data);
     if (! json_doc.isObject()) {
         qDebug() << "Root config json is not a object";
         return;
