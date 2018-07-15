@@ -19,6 +19,7 @@
 #include <QJsonDocument>
 #include <QFileInfo>
 #include <QJsonValue>
+#include <QMimeData>
 #include "define.h"
 #include "common_utils.h"
 #include "host.h"
@@ -26,6 +27,35 @@
 #define SNAPLIST_DATA (Qt::UserRole + 1)
 
 static HostDialog *singleton = NULL;
+
+void SnapListTableWidget::dropEvent(QDropEvent *event)
+{
+    qDebug() << "SnapListTableWidget::dropEvent";
+    //主要用来提取源和目的行号
+    const QMimeData *mime = event->mimeData();
+    QByteArray encodedata = mime->data("application/x-qabstractitemmodeldatalist");
+    if (encodedata.isEmpty()) {
+        qDebug() << "Encode data empty";
+        return;
+    }
+    QDataStream stream(&encodedata, QIODevice::ReadOnly);
+    int from_row;
+    int from_col;
+    QMap<int,  QVariant> from_roles_map;
+    stream >> from_row >> from_col >> from_roles_map;
+    qDebug() << "from row:" << from_row << " colum:" << from_col;
+    //
+    QTableWidgetItem *to_item = this->itemAt(event->pos());
+    if (to_item == NULL) {
+        qDebug() << "Can not locate destination";
+        return;
+    }
+    int to_row = this->row(to_item);
+    int to_col = this->column(to_item);
+    qDebug() << "to row:" << to_row << " colum:" << to_col;
+
+    return QTableWidget::dropEvent(event);
+}
 
 HostDialog::HostDialog(QWidget *parent)
     : QWidget(parent)
@@ -63,7 +93,7 @@ HostDialog::HostDialog(QWidget *parent)
     snap_left_layout->setSpacing(1);
     snap_left_widget->setLayout(snap_left_layout);
 
-    this->m_snap_list = new QTableWidget(this);
+    this->m_snap_list = new SnapListTableWidget(this);
     snap_left_layout->addWidget(this->m_snap_list);
 
     auto snap_left_btn_layout = new QHBoxLayout(this);

@@ -30,6 +30,20 @@ public:
     QString m_saving;
 };
 
+class SnapListTableWidget : public QTableWidget
+{
+    Q_OBJECT
+public:
+    SnapListTableWidget(QWidget *parent = 0)
+        : QTableWidget(parent)
+    {
+        return;
+    }
+    ~SnapListTableWidget() {}
+protected:
+    void dropEvent(QDropEvent *event);
+};
+
 class HostDialog : public QWidget
 {
     Q_OBJECT
@@ -61,7 +75,7 @@ private:
     void LoadConfig();
     void saveConfig();
 
-    QTableWidget *m_snap_list = NULL;
+    SnapListTableWidget *m_snap_list = NULL;
     QTextEdit *m_snap_edit = NULL;
 
     QPushButton *m_snap_new = NULL;
