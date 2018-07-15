@@ -308,9 +308,11 @@ void HostDialog::snapNew(QString name, QString content)
     snap->m_item = name_item;
 
     //选中
+    this->m_snap_list->blockSignals(true);
     this->m_snap_list->insertRow(index);
     this->m_snap_list->setItem(index, 0, prefix_item);
     this->m_snap_list->setItem(index, 1, name_item);
+    this->m_snap_list->blockSignals(false);
 
     this->m_snap_list->setCurrentItem(name_item);   //选中
     this->m_snap_list->setFocus();
