@@ -19,7 +19,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFileInfo>
 #include "define.h"
+#include "common_utils.h"
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -424,10 +426,13 @@ void HostDialog::saveConfig()
 
     QJsonDocument json_doc;
     json_doc.setObject(json_root_obj);
-
     qDebug() << "Json:" << json_doc.toJson();
 
     QString path = CONFIG_ROOT "host_config.json";
+    QFileInfo path_info(path);
+
+    util_mkdir_p(path_info.absolutePath());
+
     QFile file(path);
     if (! file.open(QFile::WriteOnly | QFile::Truncate)) {
         QString errmsg = QString("Open file ") + path + " failed, error:" + file.errorString();

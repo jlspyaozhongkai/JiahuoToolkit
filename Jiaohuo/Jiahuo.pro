@@ -33,7 +33,8 @@ SOURCES += \
     tools/convert/coder_url.cpp \
     tools/convert/coder_base64.cpp \
     tools/host/host.cpp \
-    tools/mouse/mouse.cpp
+    tools/mouse/mouse.cpp \
+    common_utils.cpp
 
 
 HEADERS += \
@@ -46,4 +47,5 @@ HEADERS += \
     tools/convert/coder_base64.h \
     tools/host/host.h \
     tools/mouse/mouse.h \
-    define.h
+    define.h \
+    common_utils.h
