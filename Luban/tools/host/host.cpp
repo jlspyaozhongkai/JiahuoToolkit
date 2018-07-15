@@ -385,23 +385,14 @@ void HostDialog::setHost(QString txt)
     data_out.flush();
     data_file.close();
 
-    QTemporaryFile script_file("copy.script");
-    if (! script_file.open()) {
-        qDebug() << "Open temporary script file failed.";
-        return;
-    }
-    QTextStream script_out(&script_file);
-    script_out << "do shell script \"";
-    script_out << "cp -f " << data_file.fileName() << " " << host_path;
-    script_out << "\" with administrator privileges";
-    script_out.flush();
-    script_file.close();
-
-    //Dump
-
+    //cp -f /xxxxx /private/etc/hosts
+    //osascript -e "do shell script \"cp -f /xxxxx /private/etc/hosts\" with administrator privileges"
     QProcess run;
     QStringList run_args;
-    run_args << script_file.fileName();
+    run_args << "-e";
+    run_args << QString("do shell script \"")
+                + "cp -f " + data_file.fileName() + " " + host_path
+                + QString("\" with administrator privileges");
     qDebug() << "Run:" << "osascript" << " " << run_args;
     run.start("osascript", run_args);
     run.waitForFinished();
