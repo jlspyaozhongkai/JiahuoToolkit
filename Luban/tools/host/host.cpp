@@ -252,6 +252,8 @@ void HostDialog::snapNew()
     auto snap = new HostSnap();
     auto datatime_now = QDateTime::currentDateTime();
     snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
+    snap->m_saving = this->getHost();
+    snap->m_editing = snap->m_saving;
 
     auto prefix_item = new QTableWidgetItem();
     prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
@@ -351,29 +353,27 @@ void HostDialog::snapCancel()
     return;
 }
 
+#if defined(Q_OS_MACX)
+static QString host_path = "/private/etc/hosts";
+
 QString HostDialog::getHost()
 {
-    //TODO: 暂时只支持Mac  /private/etc/hosts
-    QString host_path = "/private/etc/hosts";
-
     QString ret_val = "";
-
     QFile file(host_path);
     if (! file.open(QFile::ReadOnly | QFile::Text)) {
         qDebug() << "Open file " << host_path << " failed.";
+        ret_val = QString("#!!Read file ") + host_path + " failed.!!!";
         return ret_val;
     }
     QTextStream in(&file);
     ret_val = in.readAll();
     file.close();
-
     return ret_val;
 }
 
 void HostDialog::setHost(QString txt)
 {
-    //TODO: 暂时只支持Mac  /private/etc/hosts
-    QString host_path = "/private/etc/hosts";
+    //TODO: 权限是个大问题
 
     QFile file(host_path);
     if (! file.open(QFile::WriteOnly | QFile::Text)) {
@@ -387,6 +387,14 @@ void HostDialog::setHost(QString txt)
 
     return;
 }
+
+#elif defined(Q_OS_LINUX)
+
+#elif defined(Q_OS_WIN)
+
+#else
+
+#endif
 
 void HostDialog::launch()
 {
