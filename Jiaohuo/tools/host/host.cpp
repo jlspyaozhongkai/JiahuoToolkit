@@ -105,6 +105,7 @@ HostDialog::HostDialog(QWidget *parent)
     //设置当前
     this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
     this->m_snap_list->setSelectionBehavior(QTableWidget::SelectRows);
+    this->m_snap_list->setSelectionMode(QTableWidget::SingleSelection);
     this->m_snap_list->horizontalHeader()->setStretchLastSection(true);
     this->m_snap_list->verticalHeader()->hide();
     this->m_snap_list->horizontalHeader()->hide();
