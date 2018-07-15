@@ -40,6 +40,8 @@ public:
         return;
     }
     ~SnapListTableWidget() {}
+signals:
+    void signalDropRow(int from, int to);
 protected:
     void dropEvent(QDropEvent *event);
 };
@@ -55,6 +57,7 @@ public:
 private:
     void flushSnap(int row);
     void insertSnap(int row, HostSnap *snap);
+    void snapDropRow(int from, int to);
 
     void snapListRename(int row);
     void snapListSelect(int row);

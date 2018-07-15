@@ -54,6 +54,8 @@ void SnapListTableWidget::dropEvent(QDropEvent *event)
     int to_col = this->column(to_item);
     qDebug() << "to row:" << to_row << " colum:" << to_col;
 
+    emit this->signalDropRow(from_row, to_row);
+
     return QTableWidget::dropEvent(event);
 }
 
@@ -179,6 +181,10 @@ HostDialog::HostDialog(QWidget *parent)
         }
     });
 
+    connect(this->m_snap_list, &SnapListTableWidget::signalDropRow, [this](int from, int to){
+        this->snapDropRow(from, to);
+    });
+
     connect(this->m_snap_new, &QPushButton::pressed, [this]{
         this->snapNew();
     });
@@ -254,6 +260,13 @@ void HostDialog::snapListRename(int row)
     snap->m_name = name_item->text();
 
     this->saveConfig();
+    return;
+}
+
+void HostDialog::snapDropRow(int from, int to)
+{
+    qDebug() << "Snapshot drop from:" << from << " to:" << to;
+
     return;
 }
 
