@@ -37,6 +37,7 @@ public:
     HostDialog(QWidget *parent = 0);
     ~HostDialog() {}
 private:
+    void snapListRename(int row);
     void snapListSelect(int row);
     void snapContentChanged();
     void snapNew();
@@ -49,6 +50,9 @@ private:
 
     QString getHost();
     void setHost(QString txt);
+
+    void LoadConfig();
+    void saveConfig();
 
     QTableWidget *m_snap_list = NULL;
     QTextEdit *m_snap_edit = NULL;

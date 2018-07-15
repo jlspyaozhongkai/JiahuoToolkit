@@ -131,6 +131,12 @@ HostDialog::HostDialog(QWidget *parent)
     });
     this->m_snap_list->setCurrentItem(name_item);
 
+    connect(this->m_snap_list, &QTableWidget::cellChanged, [this](int row, int column){
+        if (column == 1) {
+            this->snapListRename(row);
+        }
+    });
+
     connect(this->m_snap_new, &QPushButton::pressed, [this]{
         this->snapNew();
     });
@@ -190,6 +196,20 @@ void HostDialog::flushSnap(int row)
     return;
 }
 
+void HostDialog::snapListRename(int row)
+{
+    qDebug() << "Snapshot rename at:" << row;
+
+    auto name_item = this->m_snap_list->item(row, 1);
+    Q_ASSERT(name_item != NULL);
+
+    HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
+    Q_ASSERT(snap != NULL);
+
+    snap->m_name = name_item->text();
+    return;
+}
+
 void HostDialog::snapListSelect(int row)
 {
     if (row == this->m_snap_list->rowCount() - 1) {
@@ -232,8 +252,9 @@ void HostDialog::snapListSelect(int row)
 
 void HostDialog::snapContentChanged()
 {
-    //保存
     auto row = this->m_snap_list->currentRow();
+
+    qDebug() << "Snapshot text changed at:" << row;
 
     auto name_item = this->m_snap_list->item(row, 1);
     Q_ASSERT(name_item != NULL);
@@ -355,6 +376,17 @@ void HostDialog::snapCancel()
     return;
 }
 
+void HostDialog::LoadConfig()
+{
+
+    return;
+}
+
+void HostDialog::saveConfig()
+{
+    return;
+}
+
 #if defined(Q_OS_MACX)
 static QString host_path = "/private/etc/hosts";
 
@@ -421,5 +453,3 @@ void HostDialog::launch()
     win->setFocus();
     return;
 }
-
-
