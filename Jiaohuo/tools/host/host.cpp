@@ -15,7 +15,11 @@
 #include <QDateTime>
 #include <QTemporaryFile>
 #include <QProcess>
+#include <QMessageBox>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include "define.h"
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -208,6 +212,8 @@ void HostDialog::snapListRename(int row)
     Q_ASSERT(snap != NULL);
 
     snap->m_name = name_item->text();
+
+    this->saveConfig();
     return;
 }
 
@@ -299,6 +305,7 @@ void HostDialog::snapNew()
     this->m_snap_list->setCurrentItem(name_item);   //选中
     this->m_snap_list->setFocus();
 
+    this->saveConfig();
     return;
 }
 
@@ -322,6 +329,7 @@ void HostDialog::snapDel()
     this->m_snap_list->setCurrentItem(next_item);   //选中
     this->m_snap_list->setFocus();
 
+    this->saveConfig();
     return;
 }
 
@@ -354,6 +362,7 @@ void HostDialog::snapSave()
     snap->m_saving = snap->m_editing;
 
     flushSnap(row);
+    this->saveConfig();
     return;
 }
 
@@ -385,8 +394,10 @@ void HostDialog::LoadConfig()
 
 void HostDialog::saveConfig()
 {
-    QJsonDocument json_root;
-
+    qDebug() << "Save host config";
+    //----------------------------------------------------------
+    //Host
+    QJsonArray json_host_snap_array;
     int count = this->m_snap_list->rowCount() - 1;  //最好一个是当前，不算！
     int row;
     for (row = 0; row < count; row++) {
@@ -396,8 +407,37 @@ void HostDialog::saveConfig()
 
         HostSnap *snap = (HostSnap *)(name_item->data(SNAPLIST_DATA).value<void *>());
 
+        QJsonObject json_host_snap_node;
+        json_host_snap_node.insert("name", snap->m_name);
+        json_host_snap_node.insert("content", snap->m_saving);
 
+        json_host_snap_array.append(json_host_snap_node);
     }
+
+    QJsonObject json_host_obj;
+    json_host_obj.insert("snaps", json_host_snap_array);
+
+    //----------------------------------------------------------
+    //Root
+    QJsonObject json_root_obj;
+    json_root_obj.insert("host", json_host_obj);
+
+    QJsonDocument json_doc;
+    json_doc.setObject(json_root_obj);
+
+    qDebug() << "Json:" << json_doc.toJson();
+
+    QString path = CONFIG_ROOT "host_config.json";
+    QFile file(path);
+    if (! file.open(QFile::WriteOnly | QFile::Truncate)) {
+        QString errmsg = QString("Open file ") + path + " failed, error:" + file.errorString();
+        QMessageBox::critical(this, "写入配置错误", errmsg);
+        return;
+    }
+    QTextStream out(&file);
+    out << json_doc.toJson();
+    out.flush();
+    file.close();
 
     return;
 }
