@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include <QJsonDocument>
 #include <QFileInfo>
+#include <QJsonValue>
 #include "define.h"
 #include "common_utils.h"
 #include "host.h"
@@ -274,16 +275,24 @@ void HostDialog::snapContentChanged()
     return;
 }
 
-void HostDialog::snapNew()
+void HostDialog::snapNew(QString name, QString content)
 {
     auto index = this->m_snap_list->rowCount() - 1;
 
     qDebug() << "Snapshot new at:" << index;
 
     auto snap = new HostSnap();
-    auto datatime_now = QDateTime::currentDateTime();
-    snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
-    snap->m_saving = this->getHost();
+    if (name == "") {
+        auto datatime_now = QDateTime::currentDateTime();
+        snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
+    } else {
+        snap->m_name = name;
+    }
+    if (content == "") {
+        snap->m_saving = this->getHost();
+    } else {
+        snap->m_saving = content;
+    }
     snap->m_editing = snap->m_saving;
 
     auto prefix_item = new QTableWidgetItem();
@@ -387,8 +396,30 @@ void HostDialog::snapCancel()
     return;
 }
 
-void HostDialog::snapLoadConfig(QJsonObject *json)
+void HostDialog::snapLoadConfig(QJsonArray &json)
 {
+    int count = json.count();
+    int iloop;
+    for (iloop = 0; iloop < count; iloop++) {
+        QJsonValue node_val = json.at(iloop);
+        if (node_val.isObject()) {
+            QJsonObject node_obj = node_val.toObject();
+
+            QJsonValue name_value = node_obj.value("name");
+            if (! name_value.isString()) {
+                continue;
+            }
+            QJsonValue content_value = node_obj.value("content");
+            if (! content_value.isString()) {
+                continue;
+            }
+
+            QString name = name_value.toString();
+            QString content = content_value.toString();
+
+            this->snapNew(name, content);
+        }
+    }
 
     return;
 }
@@ -432,8 +463,26 @@ void HostDialog::LoadConfig()
     QTextStream in(&file);
     QString json_txt = in.readAll();
     file.close();
-
     qDebug() << "Load json: " << json_txt;
+
+    QJsonDocument json_doc = QJsonDocument::fromBinaryData(json_txt.toUtf8(), QJsonDocument::BypassValidation);
+    if (! json_doc.isObject()) {
+        qDebug() << "Root config json is not a object";
+        return;
+    }
+
+    QJsonObject json_root_obj = json_doc.object();
+    //----------------------------------------------------------
+    QJsonValue host_value = json_root_obj.value("host");
+    if (host_value.isObject()) {
+        QJsonObject host_obj = host_value.toObject();
+
+        QJsonValue host_snaps_value = host_obj.value("snaps");
+        if (host_snaps_value.isArray()) {
+            QJsonArray host_snaps_array = host_snaps_value.toArray();
+            this->snapLoadConfig(host_snaps_array);
+        }
+    }
 
     //----------------------------------------------------------
 

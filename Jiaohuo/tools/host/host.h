@@ -44,13 +44,13 @@ private:
     void snapListRename(int row);
     void snapListSelect(int row);
     void snapContentChanged();
-    void snapNew();
+    void snapNew(QString name = "", QString content = "");
     void snapDel();
     void snapApply();
     void snapSave();
     void snapCancel();
 
-    void snapLoadConfig(QJsonObject *json);
+    void snapLoadConfig(QJsonArray &json);
     QJsonArray snapSaveConfig();
 
     QString getHost();
