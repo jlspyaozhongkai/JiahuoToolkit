@@ -109,6 +109,11 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list->verticalHeader()->hide();
     this->m_snap_list->horizontalHeader()->hide();
     this->m_snap_list->setShowGrid(false);
+
+    //this->m_snap_list->setDragDropMode(QAbstractItemView::DragDrop);
+    //this->m_snap_list->setDragEnabled(true);
+    //this->m_snap_list->setAcceptDrops(true);
+
     this->m_snap_list->setColumnCount(2);
     this->m_snap_list->setColumnWidth(0, 20);
     this->m_snap_list->setRowCount(1);
@@ -277,26 +282,8 @@ void HostDialog::snapContentChanged()
     return;
 }
 
-void HostDialog::snapNew(QString name, QString content)
+void HostDialog::insertSnap(int row, HostSnap *snap)
 {
-    auto index = this->m_snap_list->rowCount() - 1;
-
-    qDebug() << "Snapshot new at:" << index;
-
-    auto snap = new HostSnap();
-    if (name == "") {
-        auto datatime_now = QDateTime::currentDateTime();
-        snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
-    } else {
-        snap->m_name = name;
-    }
-    if (content == "") {
-        snap->m_saving = this->getHost();
-    } else {
-        snap->m_saving = content;
-    }
-    snap->m_editing = snap->m_saving;
-
     auto prefix_item = new QTableWidgetItem();
     prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
     prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
@@ -311,13 +298,44 @@ void HostDialog::snapNew(QString name, QString content)
 
     //选中
     this->m_snap_list->blockSignals(true);
-    this->m_snap_list->insertRow(index);
-    this->m_snap_list->setItem(index, 0, prefix_item);
-    this->m_snap_list->setItem(index, 1, name_item);
+    this->m_snap_list->insertRow(row);
+    this->m_snap_list->setItem(row, 0, prefix_item);
+    this->m_snap_list->setItem(row, 1, name_item);
     this->m_snap_list->blockSignals(false);
 
     this->m_snap_list->setCurrentItem(name_item);   //选中
     this->m_snap_list->setFocus();
+
+    return;
+}
+
+void HostDialog::snapLoad(QString name, QString content)
+{
+    auto row = this->m_snap_list->rowCount() - 1;
+    qDebug() << "Snapshot load at:" << row;
+
+    auto snap = new HostSnap();
+    snap->m_name = name;
+    snap->m_saving = content;
+    snap->m_editing = snap->m_saving;
+
+    this->insertSnap(row, snap);
+
+    return;
+}
+
+void HostDialog::snapNew()
+{
+    auto row = this->m_snap_list->rowCount() - 1;
+    qDebug() << "Snapshot new at:" << row;
+
+    auto snap = new HostSnap();
+    auto datatime_now = QDateTime::currentDateTime();
+    snap->m_name = QString("Snapshot_") + datatime_now.toString("yyyy/dd/MM_hh:mm:ss");
+    snap->m_saving = this->getHost();
+    snap->m_editing = snap->m_saving;
+
+    this->insertSnap(row, snap);
 
     this->saveConfig();
     return;
@@ -421,7 +439,7 @@ void HostDialog::snapLoadConfig(QJsonArray &json)
             QString name = name_value.toString();
             QString content = content_value.toString();
 
-            this->snapNew(name, content);
+            this->snapLoad(name, content);
         }
     }
 

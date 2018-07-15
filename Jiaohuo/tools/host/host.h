@@ -40,11 +40,13 @@ public:
     ~HostDialog() {}
 private:
     void flushSnap(int row);
+    void insertSnap(int row, HostSnap *snap);
 
     void snapListRename(int row);
     void snapListSelect(int row);
     void snapContentChanged();
-    void snapNew(QString name = "", QString content = "");
+    void snapLoad(QString name, QString content);
+    void snapNew();
     void snapDel();
     void snapApply();
     void snapSave();
