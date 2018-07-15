@@ -170,6 +170,7 @@ HostDialog::HostDialog(QWidget *parent)
     auto edit_widget = new QWidget(this);
     top_tab->addTab(edit_widget, "编辑");
 
+    this->LoadConfig();
     return;
 }
 
@@ -419,6 +420,20 @@ void HostDialog::LoadConfig()
     qDebug() << "Load host config";
 
     //----------------------------------------------------------
+    //Root
+    QString path = CONFIG_ROOT "host_config.json";
+
+    QFile file(path);
+    if (! file.open(QFile::ReadOnly)) {
+        QString errmsg = QString("Open file ") + path + " failed, error:" + file.errorString();
+        qDebug() << errmsg;
+        return;
+    }
+    QTextStream in(&file);
+    QString json_txt = in.readAll();
+    file.close();
+
+    qDebug() << "Load json: " << json_txt;
 
     //----------------------------------------------------------
 
