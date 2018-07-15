@@ -110,9 +110,9 @@ HostDialog::HostDialog(QWidget *parent)
     this->m_snap_list->horizontalHeader()->hide();
     this->m_snap_list->setShowGrid(false);
 
-    //this->m_snap_list->setDragDropMode(QAbstractItemView::DragDrop);
-    //this->m_snap_list->setDragEnabled(true);
-    //this->m_snap_list->setAcceptDrops(true);
+    this->m_snap_list->setDragDropMode(QAbstractItemView::DragDrop);
+    this->m_snap_list->setDragEnabled(true);
+    this->m_snap_list->setAcceptDrops(true);
 
     this->m_snap_list->setColumnCount(2);
     this->m_snap_list->setColumnWidth(0, 20);
@@ -120,12 +120,12 @@ HostDialog::HostDialog(QWidget *parent)
 
     auto prefix_item = new QTableWidgetItem();
     prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
-    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    prefix_item->setFlags(prefix_item->flags() & ~(Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
     prefix_item->setText(" ");
 
     auto name_item = new QTableWidgetItem();
     name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
-    name_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    name_item->setFlags(prefix_item->flags() & ~(Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
     name_item->setText("当前");
 
     this->m_snap_list->setItem(0, 0, prefix_item);
@@ -286,12 +286,12 @@ void HostDialog::insertSnap(int row, HostSnap *snap)
 {
     auto prefix_item = new QTableWidgetItem();
     prefix_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)NULL));
-    prefix_item->setFlags(prefix_item->flags() & ~Qt::ItemIsEditable);
+    prefix_item->setFlags(prefix_item->flags() & ~(Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
     prefix_item->setText(" ");
 
     auto name_item = new QTableWidgetItem();
     name_item->setData(SNAPLIST_DATA, QVariant::fromValue((void *)snap));
-    name_item->setFlags(name_item->flags() | Qt::ItemIsEditable);
+    name_item->setFlags(name_item->flags() | (Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled));
     name_item->setText(snap->m_name);
 
     snap->m_item = name_item;
