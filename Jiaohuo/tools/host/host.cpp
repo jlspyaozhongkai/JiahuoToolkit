@@ -64,7 +64,6 @@ HostDialog::HostDialog(QWidget *parent)
     snap_left_widget->setLayout(snap_left_layout);
 
     this->m_snap_list = new QTableWidget(this);
-    this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
     snap_left_layout->addWidget(this->m_snap_list);
 
     auto snap_left_btn_layout = new QHBoxLayout(this);
@@ -104,6 +103,7 @@ HostDialog::HostDialog(QWidget *parent)
     snap_right_btn_layout->addWidget(this->m_snap_cancel);
 
     //设置当前
+    this->m_snap_list->setEditTriggers(QListWidget::SelectedClicked);
     this->m_snap_list->setSelectionBehavior(QTableWidget::SelectRows);
     this->m_snap_list->horizontalHeader()->setStretchLastSection(true);
     this->m_snap_list->verticalHeader()->hide();
@@ -170,6 +170,8 @@ HostDialog::HostDialog(QWidget *parent)
     //编辑
     auto edit_widget = new QWidget(this);
     top_tab->addTab(edit_widget, "编辑");
+
+
 
     this->LoadConfig();
     return;
