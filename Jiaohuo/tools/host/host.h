@@ -13,6 +13,8 @@
 #include <QDebug>
 #include <QList>
 #include <QMap>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class HostSnap {
 public:
@@ -37,6 +39,8 @@ public:
     HostDialog(QWidget *parent = 0);
     ~HostDialog() {}
 private:
+    void flushSnap(int row);
+
     void snapListRename(int row);
     void snapListSelect(int row);
     void snapContentChanged();
@@ -46,7 +50,8 @@ private:
     void snapSave();
     void snapCancel();
 
-    void flushSnap(int row);
+    void snapLoadConfig(QJsonObject *json);
+    QJsonArray snapSaveConfig();
 
     QString getHost();
     void setHost(QString txt);

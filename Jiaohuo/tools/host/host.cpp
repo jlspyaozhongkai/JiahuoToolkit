@@ -17,8 +17,6 @@
 #include <QProcess>
 #include <QMessageBox>
 #include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
 #include <QFileInfo>
 #include "define.h"
 #include "common_utils.h"
@@ -388,17 +386,14 @@ void HostDialog::snapCancel()
     return;
 }
 
-void HostDialog::LoadConfig()
+void HostDialog::snapLoadConfig(QJsonObject *json)
 {
 
     return;
 }
 
-void HostDialog::saveConfig()
+QJsonArray HostDialog::snapSaveConfig()
 {
-    qDebug() << "Save host config";
-    //----------------------------------------------------------
-    //Host
     QJsonArray json_host_snap_array;
     int count = this->m_snap_list->rowCount() - 1;  //最好一个是当前，不算！
     int row;
@@ -416,9 +411,29 @@ void HostDialog::saveConfig()
         json_host_snap_array.append(json_host_snap_node);
     }
 
-    QJsonObject json_host_obj;
-    json_host_obj.insert("snaps", json_host_snap_array);
+    return json_host_snap_array;
+}
 
+void HostDialog::LoadConfig()
+{
+    qDebug() << "Load host config";
+
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+
+    return;
+}
+
+void HostDialog::saveConfig()
+{
+    qDebug() << "Save host config";
+    //----------------------------------------------------------
+    //Host
+    QJsonObject json_host_obj;
+    json_host_obj.insert("snaps", this->snapSaveConfig());
+
+    //......
     //----------------------------------------------------------
     //Root
     QJsonObject json_root_obj;
