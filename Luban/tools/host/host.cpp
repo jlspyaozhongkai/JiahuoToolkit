@@ -13,6 +13,8 @@
 #include <QFile>
 #include <QTime>
 #include <QDateTime>
+#include <QTemporaryFile>
+#include <QProcess>
 #include "host.h"
 
 #define SNAPLIST_DATA (Qt::UserRole + 1)
@@ -362,7 +364,7 @@ QString HostDialog::getHost()
     QFile file(host_path);
     if (! file.open(QFile::ReadOnly | QFile::Text)) {
         qDebug() << "Open file " << host_path << " failed.";
-        ret_val = QString("#!!Read file ") + host_path + " failed.!!!";
+        ret_val = QString("#!!Read file ") + host_path + " failed, error :" + file.errorString() + ".!!!";
         return ret_val;
     }
     QTextStream in(&file);
@@ -373,17 +375,36 @@ QString HostDialog::getHost()
 
 void HostDialog::setHost(QString txt)
 {
-    //TODO: 权限是个大问题
-
-    QFile file(host_path);
-    if (! file.open(QFile::WriteOnly | QFile::Text)) {
-        qDebug() << "Open file " << host_path << " failed.";
+    QTemporaryFile data_file("hosts");
+    if (! data_file.open()) {
+        qDebug() << "Open temporary data file failed.";
         return;
     }
-    QTextStream out(&file);
-    out << txt;
-    out.flush();
-    file.close();
+    QTextStream data_out(&data_file);
+    data_out << txt;
+    data_out.flush();
+    data_file.close();
+
+    QTemporaryFile script_file("copy.script");
+    if (! script_file.open()) {
+        qDebug() << "Open temporary script file failed.";
+        return;
+    }
+    QTextStream script_out(&script_file);
+    script_out << "do shell script \"";
+    script_out << "cp -f " << data_file.fileName() << " " << host_path;
+    script_out << "\" with administrator privileges";
+    script_out.flush();
+    script_file.close();
+
+    //Dump
+
+    QProcess run;
+    QStringList run_args;
+    run_args << script_file.fileName();
+    qDebug() << "Run:" << "osascript" << " " << run_args;
+    run.start("osascript", run_args);
+    run.waitForFinished();
 
     return;
 }
