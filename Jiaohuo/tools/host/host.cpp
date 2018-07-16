@@ -616,9 +616,9 @@ QString HostDialog::getHost()
     QString ret_val = "";
     QFile file(host_path);
     if (! file.open(QFile::ReadOnly | QFile::Text)) {
-        qDebug() << "Open file " << host_path << " failed.";
-        ret_val = QString("#!!Read file ") + host_path + " failed, error :" + file.errorString() + ".!!!";
-        return ret_val;
+        QString errmsg = QString("Open file ") + host_path + " failed, error: " + file.errorString();
+        QMessageBox::critical(this, "读取Host失败", errmsg);
+        return errmsg;
     }
     QTextStream in(&file);
     ret_val = in.readAll();
@@ -630,7 +630,8 @@ void HostDialog::setHost(QString txt)
 {
     QTemporaryFile data_file("hosts");
     if (! data_file.open()) {
-        qDebug() << "Open temporary data file failed.";
+        QString errmsg = QString("Open file ") + data_file.fileName() + " failed, error: " + data_file.errorString();
+        QMessageBox::critical(this, "写入临时Host文件失败", errmsg);
         return;
     }
     QTextStream data_out(&data_file);
@@ -638,6 +639,7 @@ void HostDialog::setHost(QString txt)
     data_out.flush();
     data_file.close();
 
+    //Copy
     //cp -f /xxxxx /private/etc/hosts
     //osascript -e "do shell script \"cp -f /xxxxx /private/etc/hosts\" with administrator privileges"
     QProcess run;
